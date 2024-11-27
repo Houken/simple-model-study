@@ -19,8 +19,10 @@ class LineController extends Controller
     public function index()
     {
         $lines = Line::paginate(20);
-        dd($lines);
-        return Inertia::render('Lines/Index');
+        // dd($lines);
+        return Inertia::render('Lines/Index', [
+            'lines' => $lines,
+        ]);
     }
 
     /**
