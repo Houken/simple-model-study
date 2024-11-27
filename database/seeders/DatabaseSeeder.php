@@ -16,9 +16,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Word::factory(1000)->create();
-        Book::factory(5)->create();
-        Line::factory(2000)->create();
+        // Word::factory(1000)->create();
+
+        $this->call([
+            BookSeeder::class,
+            WordSeeder::class,
+            LineSeeder::class,
+            UsageSeeder::class,
+        ]);
 
         User::factory()->create([
             'name' => 'Admin',

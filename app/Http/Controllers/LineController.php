@@ -18,7 +18,9 @@ class LineController extends Controller
      */
     public function index()
     {
-        //
+        $lines = Line::paginate(20);
+        dd($lines);
+        return Inertia::render('Lines/Index');
     }
 
     /**
@@ -28,16 +30,19 @@ class LineController extends Controller
     {
 
         if ($request->wordSearch) {
+            // wordsの絞り込み文字列がある場合
             $wordsQuery = Word::query();
             $wordSearch = $request->wordSearch;
             $this->applyWordSearch($wordsQuery, $wordSearch);
             $words = $wordsQuery->limit(10)->get();
             $word = [];
         } else if ($request->wordId) {
+            // 絞り込み文字列はないが、wordの指定がある場合
             $words = [];
             $wordId = $request->wordId;
             $word = Word::findOrFail($wordId);
         } else {
+            // 絞り込みも指定もない場合
             $words = [];
             $word = [];
         }
@@ -67,6 +72,7 @@ class LineController extends Controller
         $line->fill([
             'book_id' => $request->book_id,
             'word_id' => $request->word_id,
+            'index_no' => $request->index_no,
             'definition' => $request->definition,
         ]);
         $usages = $request->usages;

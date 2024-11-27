@@ -2,16 +2,23 @@
 
 namespace Database\Seeders;
 
+use Flynsarmy\CsvSeeder\CsvSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-class BookSeeder extends Seeder
+class BookSeeder extends CsvSeeder
 {
-    /**
-     * Run the database seeds.
-     */
+    public function __construct()
+    {
+        $this->table = 'books';
+        $this->filename = base_path() . '/database/csvs/books.csv';
+    }
+
     public function run(): void
     {
-        //
+        DB::disableQueryLog();
+        DB::table($this->table)->truncate();
+        parent::run();
     }
 }

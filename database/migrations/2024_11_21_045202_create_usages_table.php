@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('line_id');
             $table->string('example');
+            $table->string('translation');
             $table->timestamps();
         });
     }

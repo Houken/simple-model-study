@@ -27,6 +27,7 @@ class LineFactory extends Factory
 
         return [
             'definition' => $this->faker->sentence(),
+            'index_no' => rand(1, 2000),
             'book_id' => $bookId,
             'word_id' => $wordId,
         ];

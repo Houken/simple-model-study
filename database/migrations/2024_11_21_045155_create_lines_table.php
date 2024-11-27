@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('book_id');
             $table->foreignId('word_id');
-            // $table->unique(['book_id', 'word_id']);
+            $table->integer('index_no');
             $table->string('definition');
             $table->timestamps();
         });

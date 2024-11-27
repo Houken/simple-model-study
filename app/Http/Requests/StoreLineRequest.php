@@ -21,6 +21,6 @@ class StoreLineRequest extends LineRequest
      */
     public function rules(): array
     {
-        return [];
+        return parent::rules();
     }
 }

@@ -12,6 +12,8 @@ class Line extends Model
 
     protected $guarded = [];
 
+    protected $with = ['book', 'word', 'usages'];
+
     public function book()
     {
         return $this->belongsTo(Book::class);

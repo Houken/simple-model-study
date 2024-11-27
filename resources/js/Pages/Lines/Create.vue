@@ -6,13 +6,15 @@ import { Book, Word, Usage } from '@/types/models';
 import { CirclePlus, Filter } from 'lucide-vue-next';
 
 const form: InertiaForm<{
-    book_id?: number,
+    book_id?: number | string,
     word_id?: number,
+    index_no?: number,
     definition: string,
     usages: Usage[],
 }> = useForm({
-    book_id: undefined,
+    book_id: "",
     word_id: undefined,
+    index_no: undefined,
     definition: '',
     usages: [] as Usage[],
 });
@@ -95,14 +97,14 @@ const handleUsage = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+            <h2 class="font-semibold leading-tight text-gray-800 text-md dark:text-gray-200">
                 Line: CREATE
             </h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-4">
             <!-- Card Section -->
-            <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-14">
+            <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-4">
                 <!-- Card -->
                 <div class="p-4 bg-white shadow rounded-xl sm:p-7 dark:bg-neutral-900">
                     <form @submit.prevent="form.post(route('lines.store'))">
@@ -134,7 +136,10 @@ const handleUsage = () => {
                                         id="book-select"
                                         class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                     >
-                                        <option value="">単語集を選択</option>
+                                        <option
+                                            value=""
+                                            disabled
+                                        >単語集を選択</option>
                                         <option
                                             v-for="book in books"
                                             :key="book.id"
@@ -187,7 +192,7 @@ const handleUsage = () => {
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.word_id
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
 
                             <div class="relative sm:col-start-4 sm:col-span-9">
@@ -258,6 +263,32 @@ const handleUsage = () => {
 
                             <div class="sm:col-span-3">
                                 <label
+                                    for="line-index-no"
+                                    class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
+                                >
+                                    Index no.
+                                </label>
+                            </div>
+                            <!-- End Col -->
+
+                            <div class="sm:col-span-9">
+                                <input
+                                    v-model="form.index_no"
+                                    id="line-index-no"
+                                    type="number"
+                                    class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                >
+                            </div>
+                            <div
+                                v-if="form.errors.index_no"
+                                class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
+                            >{{
+                                form.errors.index_no
+                            }}</div>
+                            <!-- End Col -->
+
+                            <div class="sm:col-span-3">
+                                <label
                                     for="line-definition"
                                     class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
                                 >
@@ -274,6 +305,12 @@ const handleUsage = () => {
                                     class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                 >
                             </div>
+                            <div
+                                v-if="form.errors.definition"
+                                class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
+                            >{{
+                                form.errors.definition
+                            }}</div>
                             <!-- End Col -->
                         </div>
                         <!-- End Section -->
