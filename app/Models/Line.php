@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 class Line extends Model
 {
@@ -27,5 +29,13 @@ class Line extends Model
     public function usages()
     {
         return $this->hasMany(Usage::class);
+    }
+
+    public function scopeBookFilter(Builder $query, Request $request)
+    {
+        $bookId = $request->book;
+        return $query->when($bookId, function ($query) use ($bookId) {
+            return $query->where('book_id', $bookId);
+        });
     }
 }

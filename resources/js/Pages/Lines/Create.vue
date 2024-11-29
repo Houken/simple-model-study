@@ -37,57 +37,9 @@ const props = defineProps({
 
 let books = ref<Book[]>(props.books ?? []),
     book_id = ref(""),
-    wordSearch = ref<string>(""),
+    wordFilter = ref<string>(""),
     word_id = ref("");
 
-const isValidUsage = computed(() => {
-    let usagesLength = form.usages.length;
-    if (usagesLength === 0) { return true } else { return form.usages.length > 0 && !!form.usages[form.usages.length - 1]?.example; }
-
-});
-
-let wordsUrl = computed(() => {
-    let url = new URL(route("lines.create"));
-    if (wordSearch.value) {
-        url.searchParams.append("wordSearch", wordSearch.value);
-    } else if (word_id.value) {
-        url.searchParams.append("wordId", word_id.value);
-    }
-    return url;
-});
-
-watch(() => wordsUrl.value,
-    (updatedWordsUrl) => {
-        console.log(updatedWordsUrl);
-        router.visit(updatedWordsUrl, {
-            preserveScroll: true,
-            preserveState: true,
-            replace: true,
-        });
-    }
-);
-
-
-
-const selectWordId = (id: number | undefined) => {
-    if (id != undefined) {
-        word_id.value = id.toString();
-        form.word_id = parseInt(word_id.value);
-        wordSearch.value = "";
-    }
-
-};
-
-const addUsage = () => {
-    if (form.usages.length > 0 && !form.usages[form.usages.length - 1]) {
-        return;
-    }
-    form.usages.push({ example: "" });
-};
-
-const handleUsage = () => {
-    form.usages.push({ example: "" });
-};
 
 </script>
 
@@ -197,7 +149,7 @@ const handleUsage = () => {
 
                             <div class="relative sm:col-start-4 sm:col-span-9">
                                 <input
-                                    v-model="wordSearch"
+                                    v-model="wordFilter"
                                     id="word-select"
                                     type="text"
                                     placeholder="単語を絞り込み"
@@ -212,7 +164,7 @@ const handleUsage = () => {
 
                             <div
                                 class="sm:col-span-9 sm:col-start-4"
-                                v-if="wordSearch"
+                                v-if="wordFilter"
                             >
                                 <div class="flex flex-col">
                                     <div class="-m-1.5 overflow-x-auto">
@@ -232,12 +184,6 @@ const handleUsage = () => {
                                                                 {{ word.english }}</td>
                                                             <td
                                                                 class="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
-                                                                <button
-                                                                    @click="selectWordId(word.id)"
-                                                                    @submit.prevent=""
-                                                                    type="button"
-                                                                    class="inline-flex items-center text-sm font-semibold text-blue-600 border border-transparent rounded-lg gap-x-2 hover:text-blue-800 focus:outline-none focus:text-blue-800 disabled:opacity-50 disabled:pointer-events-none dark:text-blue-500 dark:hover:text-blue-400 dark:focus:text-blue-400"
-                                                                >Select</button>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -346,19 +292,6 @@ const handleUsage = () => {
                                         class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                     >
                                 </div><!-- End Col -->
-                            </div>
-                            <div class="sm:col-span-3 sm:col-start-4">
-                                <p class="">
-                                    <button
-                                        :disabled="!isValidUsage"
-                                        type="button"
-                                        @click="handleUsage"
-                                        class="inline-flex items-center -mt-16 text-sm font-medium text-blue-600 disabled:text-slate-600 gap-x-1 decoration-2 hover:underline focus:outline-none focus:underline dark:text-blue-500"
-                                    >
-                                        <CirclePlus :size="16" />
-                                        Add usage
-                                    </button>
-                                </p>
                             </div>
                             <!-- End Col -->
                         </div>

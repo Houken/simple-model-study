@@ -20,10 +20,18 @@ export interface Line {
     word_id: number;
     definition: string;
     index_no: number;
+    usages?: Array;
 }
 
 export interface Usage {
     id?: number;
     line_id?: number;
     example: string;
+    translation: string;
+}
+
+export interface linkObj {
+    active: boolean;
+    label: string;
+    url: string;
 }

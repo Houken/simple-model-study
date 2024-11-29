@@ -4,25 +4,42 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLineRequest;
 use App\Http\Requests\UpdateLineRequest;
+use App\Http\Resources\BookResource;
+use App\Http\Resources\LineResource;
 use App\Models\Book;
 use App\Models\Line;
 use App\Models\Usage;
 use App\Models\Word;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Symfony\Component\CssSelector\Node\FunctionNode;
 
 class LineController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $lines = Line::paginate(20);
+        $linesQuery = Line::bookFilter($request);
+        $wordFilter = $request->wordFilter;
+        $this->applyLineFilterByWord($linesQuery, $wordFilter);
+        $lines = LineResource::collection($linesQuery->paginate(15));
+        $books = BookResource::collection(Book::all());
         // dd($lines);
         return Inertia::render('Lines/Index', [
             'lines' => $lines,
+            'books' => $books,
         ]);
+    }
+
+    protected function applyLineFilterByWord($query, $search)
+    {
+        return $query->whereHas('word', function ($query) use ($search) {
+            if ($search) {
+                $query->whereLike('english', "$search%");
+            }
+        });
     }
 
     /**
@@ -31,11 +48,11 @@ class LineController extends Controller
     public function create(Request $request)
     {
 
-        if ($request->wordSearch) {
+        if ($request->wordFilter) {
             // wordsの絞り込み文字列がある場合
             $wordsQuery = Word::query();
-            $wordSearch = $request->wordSearch;
-            $this->applyWordSearch($wordsQuery, $wordSearch);
+            $wordFilter = $request->wordFilter;
+            $this->applyWordFilter($wordsQuery, $wordFilter);
             $words = $wordsQuery->limit(10)->get();
             $word = [];
         } else if ($request->wordId) {
@@ -56,7 +73,7 @@ class LineController extends Controller
         ]);
     }
 
-    protected function applyWordSearch($query, $search)
+    protected function applyWordFilter($query, $search)
     {
         return $query->when($search, function ($query) use ($search) {
             if ($search) {
@@ -96,7 +113,9 @@ class LineController extends Controller
      */
     public function show(Line $line)
     {
-        //
+        $line = new LineResource(Line::findOrFail($line->id));
+
+        return Inertia::render('Lines/Show', ['line' => $line]);
     }
 
     /**
