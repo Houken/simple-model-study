@@ -18,11 +18,10 @@
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
-                            <div class="sm:col-span-12">
-                                <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                                    Book info.
-                                </h2>
-                            </div>
+                            <SectionTitle
+                                title="Book info."
+                                class="rounded-t-lg"
+                            />
                             <!-- End Col -->
 
                             <div class="sm:col-span-3">
@@ -66,11 +65,7 @@
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
-                            <div class="sm:col-span-12">
-                                <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                                    Word info.
-                                </h2>
-                            </div>
+                            <SectionTitle title="Word info." />
                             <!-- End Col -->
 
                             <div class="sm:col-span-3">
@@ -155,11 +150,7 @@
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
-                            <div class="sm:col-span-12">
-                                <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                                    Line info.
-                                </h2>
-                            </div>
+                            <SectionTitle title="Line info." />
                             <!-- End Col -->
 
                             <div class="sm:col-span-3">
@@ -219,11 +210,7 @@
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
-                            <div class="sm:col-span-12">
-                                <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
-                                    Usages
-                                </h2>
-                            </div>
+                            <SectionTitle title="Usages" />
                             <!-- End Col -->
 
                             <div
@@ -247,6 +234,35 @@
                                         class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                     >
                                 </div><!-- End Col -->
+                                <div class="sm:col-span-3">
+                                    <label
+                                        :for="'usage-' + (index + 1)"
+                                        class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
+                                    >
+                                        Translation {{ index + 1 }}
+                                    </label>
+                                </div><!-- End Col -->
+                                <div class="sm:col-span-9">
+                                    <input
+                                        :id="'usage-' + (index + 1)"
+                                        v-model="usage.translation"
+                                        type="text"
+                                        class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                    >
+                                </div><!-- End Col -->
+                            </div>
+                            <div class="sm:col-span-3 sm:col-start-4">
+                                <p class="">
+                                    <button
+                                        :disabled="!isValidUsage"
+                                        type="button"
+                                        @click="handleUsage"
+                                        class="inline-flex items-center -mt-16 text-sm font-medium text-blue-600 disabled:text-slate-600 gap-x-1 decoration-2 hover:underline focus:outline-none focus:underline dark:text-blue-500"
+                                    >
+                                        <CirclePlus :size="16" />
+                                        Add usage
+                                    </button>
+                                </p>
                             </div>
                             <!-- End Col -->
                         </div>
@@ -283,6 +299,7 @@ import { Head, InertiaForm, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, PropType, ref, watch } from 'vue';
 import { Book, Word, Usage } from '@/types/models';
 import { CirclePlus, Filter } from 'lucide-vue-next';
+import SectionTitle from '@/Components/SectionTitle.vue';
 
 const form: InertiaForm<{
     book_id?: number | string,
@@ -313,11 +330,18 @@ const props = defineProps({
     },
 });
 
-
 let books = ref<Book[]>(props.books ?? []),
     book_id = ref(""),
     wordFilter = ref<string>(""),
     word_id = ref("");
 
+const isValidUsage = computed(() => {
+    let usagesLength = form.usages.length;
+    if (usagesLength === 0) { return true } else { return form.usages.length > 0 && !!form.usages[form.usages.length - 1]?.example; }
 
+});
+
+const handleUsage = () => {
+    form.usages.push({ example: "", translation: "" });
+};
 </script>

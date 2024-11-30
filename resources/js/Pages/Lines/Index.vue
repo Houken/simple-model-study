@@ -97,8 +97,13 @@
                                                 class="hover:bg-gray-100 dark:hover:bg-neutral-700"
                                             >
                                                 <td
-                                                    class="px-6 py-2 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-neutral-200">
-                                                    {{ line.id }}</td>
+                                                    class="relative px-6 py-2 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-neutral-200 hover:bg-slate-200">
+                                                    <Link
+                                                        :href="route('lines.show', { line: line.id })"
+                                                        class="absolute inset-0 pt-2"
+                                                    >{{ line.id }}
+                                                    </Link>
+                                                </td>
                                                 <td
                                                     class="px-6 py-2 text-sm text-gray-800 whitespace-nowrap dark:text-neutral-200">
                                                     {{ line.book.title }}</td>
@@ -130,7 +135,7 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, InertiaForm, router, useForm, usePage } from '@inertiajs/vue3';
+import { Head, InertiaForm, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, PropType, ref, watch } from 'vue';
 import { Book, Word, Usage, Line, linkObj } from '@/types/models';
 import Pagination from '@/Components/Pagination.vue';

@@ -1,5 +1,5 @@
 <template>
-    <div class="pt-6 mx-auto max-w-7xl">
+    <div class="mx-auto max-w-7xl">
         <div class="mx-auto max-w-none">
             <div class="overflow-hidden bg-white shadow sm:rounded-lg">
                 <div class="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6">
