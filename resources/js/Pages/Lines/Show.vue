@@ -16,7 +16,7 @@
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
-                            <div class="sm:col-span-12">
+                            <div class="py-3 rounded pl-7 -mt-7 -mx-7 sm:col-span-12 bg-slate-200">
                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
                                     Book info.
                                 </h2>
@@ -45,7 +45,7 @@
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
-                            <div class="sm:col-span-12">
+                            <div class="py-3 -mt-8 -mx-7 pl-7 sm:col-span-12 bg-slate-200">
                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
                                     Word info.
                                 </h2>
@@ -73,7 +73,7 @@
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
-                            <div class="sm:col-span-12">
+                            <div class="py-3 -mt-8 -mx-7 pl-7 sm:col-span-12 bg-slate-200">
                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
                                     Line info.
                                 </h2>
@@ -124,7 +124,7 @@
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
-                            <div class="sm:col-span-12">
+                            <div class="py-3 -mt-8 -mx-7 pl-7 sm:col-span-12 bg-slate-200">
                                 <h2 class="text-lg font-semibold text-gray-800 dark:text-neutral-200">
                                     Usages
                                 </h2>
@@ -165,14 +165,11 @@
                                     >
                                         <ExampleDecode :text="usage.translation" />
                                     </p>
-
                                 </div><!-- End Col -->
                             </div>
                             <!-- End Col -->
                         </div>
                         <!-- End Section -->
-                        <div class="flex justify-end mt-5 gap-x-2">
-                        </div>
                     </div>
                 </div>
                 <!-- End Card -->
