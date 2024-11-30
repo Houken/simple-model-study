@@ -1,48 +1,3 @@
-<script setup lang="ts">
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, InertiaForm, router, useForm, usePage } from '@inertiajs/vue3';
-import { computed, PropType, ref, watch } from 'vue';
-import { Book, Word, Usage } from '@/types/models';
-import { CirclePlus, Filter } from 'lucide-vue-next';
-
-const form: InertiaForm<{
-    book_id?: number | string,
-    word_id?: number,
-    index_no?: number,
-    definition: string,
-    usages: Usage[],
-}> = useForm({
-    book_id: "",
-    word_id: undefined,
-    index_no: undefined,
-    definition: '',
-    usages: [] as Usage[],
-});
-
-const props = defineProps({
-    books: {
-        type: Array as PropType<Book[]>,
-        default: () => []
-    },
-    words: {
-        type: Array as PropType<Word[]>,
-        default: () => []
-    },
-    word: {
-        type: Object as PropType<Word>,
-        default: () => { }
-    },
-});
-
-
-let books = ref<Book[]>(props.books ?? []),
-    book_id = ref(""),
-    wordFilter = ref<string>(""),
-    word_id = ref("");
-
-
-</script>
-
 <template>
 
     <Head title="Line: CREATE" />
@@ -144,7 +99,7 @@ let books = ref<Book[]>(props.books ?? []),
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.word_id
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
 
                             <div class="relative sm:col-start-4 sm:col-span-9">
@@ -230,7 +185,7 @@ let books = ref<Book[]>(props.books ?? []),
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.index_no
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
 
                             <div class="sm:col-span-3">
@@ -256,7 +211,7 @@ let books = ref<Book[]>(props.books ?? []),
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.definition
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
                         </div>
                         <!-- End Section -->
@@ -321,3 +276,48 @@ let books = ref<Book[]>(props.books ?? []),
         </div>
     </AuthenticatedLayout>
 </template>
+
+<script setup lang="ts">
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head, InertiaForm, router, useForm, usePage } from '@inertiajs/vue3';
+import { computed, PropType, ref, watch } from 'vue';
+import { Book, Word, Usage } from '@/types/models';
+import { CirclePlus, Filter } from 'lucide-vue-next';
+
+const form: InertiaForm<{
+    book_id?: number | string,
+    word_id?: number,
+    index_no?: number,
+    definition: string,
+    usages: Usage[],
+}> = useForm({
+    book_id: "",
+    word_id: undefined,
+    index_no: undefined,
+    definition: '',
+    usages: [] as Usage[],
+});
+
+const props = defineProps({
+    books: {
+        type: Array as PropType<Book[]>,
+        default: () => []
+    },
+    words: {
+        type: Array as PropType<Word[]>,
+        default: () => []
+    },
+    word: {
+        type: Object as PropType<Word>,
+        default: () => { }
+    },
+});
+
+
+let books = ref<Book[]>(props.books ?? []),
+    book_id = ref(""),
+    wordFilter = ref<string>(""),
+    word_id = ref("");
+
+
+</script>
