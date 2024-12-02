@@ -3,9 +3,28 @@
     <Head title="Line: Show" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold leading-tight text-gray-800 text-md dark:text-gray-200">
-                Line: Show
-            </h2>
+            <div class="flex items-center justify-between">
+                <h2 class="font-semibold leading-tight text-gray-800 text-md dark:text-gray-200">
+                    Line: Show
+                </h2>
+                <div>
+                    <Link
+                        type="button"
+                        :href="route('lines.edit', { line: line?.data.id })"
+                        class="inline-flex items-center px-4 py-2 mr-1 text-xs font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                    >
+                    <Edit :size="16" />Edit
+                    </Link>
+                    <button
+                        type="button"
+                        class="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                    >
+                        <ArrowLeft :size="16" />back to List
+                    </button>
+                </div>
+
+            </div>
+
         </template>
         <div class="py-4">
             <!-- Card Section -->
@@ -168,11 +187,12 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { Line } from '@/types/models';
 import { PropType } from 'vue';
 import ExampleDecode from '@/Components/ExampleDecode.vue';
 import SectionTitle from '@/Components/SectionTitle.vue';
+import { ArrowLeft, Edit, HeartOff } from 'lucide-vue-next';
 
 const props = defineProps({
     line: {
