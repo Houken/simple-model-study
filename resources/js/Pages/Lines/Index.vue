@@ -15,14 +15,15 @@
                     <div class="flex flex-col">
                         <div class="-m-1.5 overflow-x-auto">
                             <div class="p-1.5 min-w-full inline-block align-middle">
-                                <div class="flex items-center justify-center px-4 py-2 space-x-4 bg-slate-200">
-                                    <div class="flex items-center"><label
+                                <div
+                                    class="flex items-center justify-center px-4 py-2 space-x-4 bg-slate-200 dark:bg-slate-600">
+                                    <div class="flex items-center">
+                                        <label
                                             for="select-book"
                                             class="inline-block mr-2 text-sm font-medium text-gray-800 dark:text-neutral-200"
                                         >
                                             Book :
                                         </label>
-
                                         <select
                                             v-model="bookId"
                                             id="select-book"
@@ -75,7 +76,7 @@
                                                     book</th>
                                                 <th
                                                     scope="col"
-                                                    class="w-[4rem] px-6 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
+                                                    class="w-[4rem] px-6 py-2 text-xs font-medium text-gray-500 uppercase text-center dark:text-neutral-500"
                                                 >
                                                     index_no</th>
                                                 <th
@@ -108,7 +109,7 @@
                                                     class="px-6 py-2 text-sm text-gray-800 whitespace-nowrap dark:text-neutral-200">
                                                     {{ line.book.title }}</td>
                                                 <td
-                                                    class="px-6 py-2 text-sm text-gray-800 whitespace-nowrap dark:text-neutral-200">
+                                                    class="px-6 py-2 text-sm text-center text-gray-800 whitespace-nowrap dark:text-neutral-200">
                                                     {{ line.index_no }}</td>
                                                 <td
                                                     class="px-6 py-2 text-sm text-gray-800 whitespace-nowrap dark:text-neutral-200">

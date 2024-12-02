@@ -123,7 +123,10 @@ class LineController extends Controller
      */
     public function edit(Line $line)
     {
-        //
+        $line = new LineResource(Line::findOrFail($line->id));
+        $books = BookResource::collection(Book::all());
+
+        return Inertia::render('Lines/Edit', ['line' => $line, 'books' => $books,]);
     }
 
     /**

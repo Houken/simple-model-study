@@ -1,11 +1,11 @@
 <template>
 
-    <Head title="Line: CREATE" />
+    <Head title="Line: EDIT" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold leading-tight text-gray-800 text-md dark:text-gray-200">
-                Line: CREATE
+                Line: EDIT
             </h2>
         </template>
 
@@ -13,7 +13,7 @@
             <!-- Card Section -->
             <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-4">
                 <!-- Card -->
-                <div class="p-4 bg-white shadow rounded-xl sm:p-7 dark:bg-slate-800">
+                <div class="p-4 bg-white shadow rounded-xl sm:p-7 dark:bg-neutral-900">
                     <form @submit.prevent="form.post(route('lines.store'))">
                         <!-- Section -->
                         <div
@@ -40,7 +40,7 @@
                                     <select
                                         v-model="form.book_id"
                                         id="book-select"
-                                        class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                        class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                     >
                                         <option
                                             value=""
@@ -50,6 +50,7 @@
                                             v-for="book in books"
                                             :key="book.id"
                                             :value="book.id"
+                                            :selected="book.id === props.line?.data.book.id"
                                         >{{ book.title }}</option>
                                     </select>
                                 </div>
@@ -78,9 +79,9 @@
                             <div class="sm:col-span-9">
                                 <p
                                     id="word-selected"
-                                    class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-100 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                    class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-100 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                 >
-                                    {{ props.word.english ??
+                                    {{ props.line?.data.word.english ??
                                         "単語を選択" }}</p>
                             </div>
                             <div class="hidden">
@@ -94,7 +95,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.word_id
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
 
                             <div class="relative sm:col-start-4 sm:col-span-9">
@@ -176,7 +177,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.index_no
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
 
                             <div class="sm:col-span-3">
@@ -202,7 +203,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.definition
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
                         </div>
                         <!-- End Section -->
@@ -297,28 +298,14 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, InertiaForm, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, PropType, ref, watch } from 'vue';
-import { Book, Word, Usage } from '@/types/models';
+import { Book, Word, Usage, Line } from '@/types/models';
 import { CirclePlus, Filter } from 'lucide-vue-next';
 import SectionTitle from '@/Components/SectionTitle.vue';
 
-const form: InertiaForm<{
-    book_id?: number | string,
-    word_id?: number,
-    index_no?: number,
-    definition: string,
-    usages: Usage[],
-}> = useForm({
-    book_id: "",
-    word_id: undefined,
-    index_no: undefined,
-    definition: '',
-    usages: [] as Usage[],
-});
-
 const props = defineProps({
     books: {
-        type: Array as PropType<Book[]>,
-        default: () => []
+        type: Object as PropType<{ data: Book[] }>,
+        default: () => ({ data: [] })
     },
     words: {
         type: Array as PropType<Word[]>,
@@ -328,9 +315,26 @@ const props = defineProps({
         type: Object as PropType<Word>,
         default: () => { }
     },
+    line: {
+        type: Object as PropType<{ data: Line }>,
+    }
 });
 
-let books = ref<Book[]>(props.books ?? []),
+const form: InertiaForm<{
+    book_id?: number | string,
+    word_id?: number,
+    index_no?: number,
+    definition: string | undefined,
+    usages: Usage[],
+}> = useForm({
+    book_id: props.line?.data.book.id,
+    word_id: undefined,
+    index_no: props.line?.data.index_no,
+    definition: props.line?.data.definition,
+    usages: props.line?.data.usages as Usage[],
+});
+
+let books = ref<Book[]>(props.books?.data ?? []),
     book_id = ref(""),
     wordFilter = ref<string>(""),
     word_id = ref("");
