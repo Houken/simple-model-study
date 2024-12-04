@@ -10,6 +10,8 @@ class Word extends Model
     /** @use HasFactory<\Database\Factories\WordFactory> */
     use HasFactory;
 
+    protected $guarded = [];
+
     public function lines()
     {
         return $this->hasMany(Line::class);

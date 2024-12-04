@@ -150,4 +150,9 @@ return [
     'uppercase'            => 'The :attribute field must be uppercase.',
     'url'                  => 'The :attribute field must be a valid URL.',
     'uuid'                 => 'The :attribute field must be a valid UUID.',
+    'custom' => [
+        'part_of_speech' => [
+            'unique' => 'This combination has already exists.'
+        ],
+    ],
 ];

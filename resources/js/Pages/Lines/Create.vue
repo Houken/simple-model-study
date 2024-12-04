@@ -65,7 +65,15 @@
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
-                            <SectionTitle title="Word info." />
+                            <SectionTitle title="Word info.">
+                                <Link
+                                    :href="route('words.create')"
+                                    type="button"
+                                    class="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                                >
+                                <Plus :size="16" />New Word
+                                </Link>
+                            </SectionTitle>
                             <!-- End Col -->
 
                             <div class="sm:col-span-3">
@@ -295,10 +303,10 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, InertiaForm, router, useForm, usePage } from '@inertiajs/vue3';
+import { Head, InertiaForm, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, PropType, ref, watch } from 'vue';
 import { Book, Word, Usage } from '@/types/models';
-import { CirclePlus, Filter } from 'lucide-vue-next';
+import { CirclePlus, Filter, Plus } from 'lucide-vue-next';
 import SectionTitle from '@/Components/SectionTitle.vue';
 
 const form: InertiaForm<{

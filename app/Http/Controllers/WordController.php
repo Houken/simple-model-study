@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreWordRequest;
 use App\Http\Requests\UpdateWordRequest;
 use App\Models\Word;
+use Inertia\Inertia;
 
 class WordController extends Controller
 {
@@ -21,7 +22,7 @@ class WordController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Words/Create');
     }
 
     /**
@@ -29,7 +30,20 @@ class WordController extends Controller
      */
     public function store(StoreWordRequest $request)
     {
-        //
+        // dd($request);
+        $validated = [
+            'english' => $request->english,
+            'part_of_speech' => $request->part_of_speech,
+        ];
+        $word = Word::create($validated);
+        // dd($word);
+        $redirectTo = session()->get('redirect_to') ?? '/dashboard';
+        $newWordId = $word->id;
+
+        return redirect($redirectTo)->with([
+            'success' => '新しい単語が保存されました。',
+            'new_word_id' => $newWordId,
+        ]);
     }
 
     /**

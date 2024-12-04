@@ -22,6 +22,7 @@ class LineRequest extends FormRequest
      */
     public function rules(): array
     {
+        // dd($this);
         return [
             'book_id' => 'required|exists:App\Models\Book,id',
             'word_id' => 'required|exists:App\Models\Word,id',

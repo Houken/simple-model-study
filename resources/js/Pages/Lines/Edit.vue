@@ -14,7 +14,7 @@
             <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-4">
                 <!-- Card -->
                 <div class="p-4 bg-white shadow rounded-xl sm:p-7 dark:bg-neutral-900">
-                    <form @submit.prevent="form.post(route('lines.store'))">
+                    <form @submit.prevent="updateLine">
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
@@ -84,18 +84,12 @@
                                     {{ props.line?.data.word.english ??
                                         "単語を選択" }}</p>
                             </div>
-                            <div class="hidden">
-                                <input
-                                    type="text"
-                                    v-model="form.word_id"
-                                />
-                            </div>
                             <div
                                 v-if="form.errors.word_id"
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.word_id
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
 
                             <div class="relative sm:col-start-4 sm:col-span-9">
@@ -177,7 +171,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.index_no
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
 
                             <div class="sm:col-span-3">
@@ -203,7 +197,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.definition
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
                         </div>
                         <!-- End Section -->
@@ -221,7 +215,7 @@
                             >
                                 <div class="sm:col-span-3">
                                     <label
-                                        :for="'usage-' + (index + 1)"
+                                        :for="'usage-example-' + (index + 1)"
                                         class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
                                     >
                                         Example {{ index + 1 }}
@@ -229,7 +223,7 @@
                                 </div><!-- End Col -->
                                 <div class="sm:col-span-9">
                                     <input
-                                        :id="'usage-' + (index + 1)"
+                                        :id="'usage-example-' + (index + 1)"
                                         v-model="usage.example"
                                         type="text"
                                         class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
@@ -237,7 +231,7 @@
                                 </div><!-- End Col -->
                                 <div class="sm:col-span-3">
                                     <label
-                                        :for="'usage-' + (index + 1)"
+                                        :for="'usage-translation-' + (index + 1)"
                                         class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
                                     >
                                         Translation {{ index + 1 }}
@@ -245,7 +239,7 @@
                                 </div><!-- End Col -->
                                 <div class="sm:col-span-9">
                                     <input
-                                        :id="'usage-' + (index + 1)"
+                                        :id="'usage-translation-' + (index + 1)"
                                         v-model="usage.translation"
                                         type="text"
                                         class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
@@ -321,14 +315,16 @@ const props = defineProps({
 });
 
 const form: InertiaForm<{
+    id: number | undefined,
     book_id?: number | string,
     word_id?: number,
     index_no?: number,
     definition: string | undefined,
     usages: Usage[],
 }> = useForm({
+    id: props.line?.data.id,
     book_id: props.line?.data.book.id,
-    word_id: undefined,
+    word_id: props.line?.data.word.id,
     index_no: props.line?.data.index_no,
     definition: props.line?.data.definition,
     usages: props.line?.data.usages as Usage[],
@@ -348,4 +344,8 @@ const isValidUsage = computed(() => {
 const handleUsage = () => {
     form.usages.push({ example: "", translation: "" });
 };
+
+const updateLine = () => {
+    form.put(route('lines.update', props.line?.data.id));
+}
 </script>

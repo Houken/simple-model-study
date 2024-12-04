@@ -134,7 +134,35 @@ class LineController extends Controller
      */
     public function update(UpdateLineRequest $request, Line $line)
     {
-        //
+        $validated = [
+            'book_id' => $request->book_id,
+            'word_id' => $request->word_id,
+            'index_no' => $request->index_no,
+            'definition' => $request->definition,
+        ];
+        $line->update($validated);
+        $this->updateLineUsages($line, $request->usages);
+        return redirect()->route('lines.index');
+    }
+
+    public function updateLineUsages(Line $line, array $usages)
+    {
+        foreach ($usages as $usage) {
+            if (!isset($usage['id'])) {
+                // 新規追加
+                $line->usages()->crate([
+                    'example' => $usage['exam[le'],
+                    'translation' => $usage['translation'],
+                ]);
+            } else {
+                // 既存レコードの更新
+                Usage::where('id', $usage['id'])
+                    ->update([
+                        'example' => $usage['id'],
+                        'translation' => $usage['translation'],
+                    ]);
+            }
+        }
     }
 
     /**
