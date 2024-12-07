@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\LineController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WordController;
@@ -27,6 +28,7 @@ Route::middleware('auth')->group(function () {
         return app(WordController::class)->create();
     })->name('words.create');
     Route::resource('/words', WordController::class)->except(['create']);
+    Route::resource('/books', BookController::class)->except(['create']);
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

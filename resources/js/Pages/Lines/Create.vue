@@ -88,7 +88,7 @@
                                     id="word-selected"
                                     class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-100 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                 >
-                                    {{ props.word.english ??
+                                    {{ selectedWord ??
                                         "単語を選択" }}</p>
                             </div>
                             <div class="hidden">
@@ -136,7 +136,12 @@
                                                         <tr v-for="word in props.words">
                                                             <td
                                                                 class="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-neutral-200">
-                                                                {{ word.id }}</td>
+                                                                <button
+                                                                    type="button"
+                                                                    @click="selectThisWord(word.id)"
+                                                                >{{
+                                                                    word.id }}</button>
+                                                            </td>
                                                             <td
                                                                 class="px-6 py-4 text-sm text-gray-800 whitespace-nowrap dark:text-neutral-200">
                                                                 {{ word.english }}</td>
@@ -228,7 +233,7 @@
                             >
                                 <div class="sm:col-span-3">
                                     <label
-                                        :for="'usage-' + (index + 1)"
+                                        :for="'usage-example-' + (index + 1)"
                                         class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
                                     >
                                         Example {{ index + 1 }}
@@ -236,7 +241,7 @@
                                 </div><!-- End Col -->
                                 <div class="sm:col-span-9">
                                     <input
-                                        :id="'usage-' + (index + 1)"
+                                        :id="'usage-example-' + (index + 1)"
                                         v-model="usage.example"
                                         type="text"
                                         class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
@@ -244,7 +249,7 @@
                                 </div><!-- End Col -->
                                 <div class="sm:col-span-3">
                                     <label
-                                        :for="'usage-' + (index + 1)"
+                                        :for="'usage-translation-' + (index + 1)"
                                         class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
                                     >
                                         Translation {{ index + 1 }}
@@ -252,7 +257,7 @@
                                 </div><!-- End Col -->
                                 <div class="sm:col-span-9">
                                     <input
-                                        :id="'usage-' + (index + 1)"
+                                        :id="'usage-translation-' + (index + 1)"
                                         v-model="usage.translation"
                                         type="text"
                                         class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
@@ -304,7 +309,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, InertiaForm, Link, router, useForm, usePage } from '@inertiajs/vue3';
-import { computed, PropType, ref, watch } from 'vue';
+import { computed, nextTick, PropType, ref, watch } from 'vue';
 import { Book, Word, Usage } from '@/types/models';
 import { CirclePlus, Filter, Plus } from 'lucide-vue-next';
 import SectionTitle from '@/Components/SectionTitle.vue';
@@ -340,16 +345,47 @@ const props = defineProps({
 
 let books = ref<Book[]>(props.books ?? []),
     book_id = ref(""),
-    wordFilter = ref<string>(""),
-    word_id = ref("");
+    wordFilter = ref<string>((usePage().props.wordFilter as string) || ''),
+    word_id = ref(""),
+    pageNumber = ref<number>(1);
 
 const isValidUsage = computed(() => {
     let usagesLength = form.usages.length;
-    if (usagesLength === 0) { return true } else { return form.usages.length > 0 && !!form.usages[form.usages.length - 1]?.example; }
+    if (usagesLength === 0) { return true } else { return form.usages.length > 0 && !!form.usages[form.usages.length - 1]?.example && !!form.usages[form.usages.length - 1]?.translation; }
 
 });
 
 const handleUsage = () => {
-    form.usages.push({ example: "", translation: "" });
+    const newUsageIndex = form.usages.push({ example: "", translation: "" });
+    const lastExampleId = `usage-example-${newUsageIndex}`;
+    nextTick(() => { document.getElementById(lastExampleId)?.focus(); });
+
 };
+
+let wordsUrl = computed(() => {
+    let url = new URL(route('lines.create'));
+    if (wordFilter.value) {
+        url.searchParams.append("wordFilter", wordFilter.value);
+    }
+
+    return url;
+});
+
+watch(
+    () => wordsUrl.value, (updatedWordsUrl) => {
+        router.visit(updatedWordsUrl, {
+            preserveScroll: true,
+            preserveState: true,
+            replace: true,
+        });
+    }
+);
+
+const selectThisWord = (id: number | undefined) => {
+    form.word_id = id;
+}
+
+let selectedWord = computed(() => {
+    return props.words.find(word => word.id === form.word_id)?.english;
+})
 </script>

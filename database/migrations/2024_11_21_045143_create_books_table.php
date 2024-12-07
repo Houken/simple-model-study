@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('publisher');
             $table->year('published_at');
             $table->integer('version');
+            $table->integer('max_index');
             $table->timestamps();
         });
     }

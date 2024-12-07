@@ -11,6 +11,7 @@ use App\Models\Line;
 use App\Models\Usage;
 use App\Models\Word;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Symfony\Component\CssSelector\Node\FunctionNode;
 
@@ -105,7 +106,7 @@ class LineController extends Controller
             }
         }
 
-        return redirect()->route('dashboard');
+        return redirect()->route('lines.show', ['line' => $line]);
     }
 
     /**
@@ -134,31 +135,44 @@ class LineController extends Controller
      */
     public function update(UpdateLineRequest $request, Line $line)
     {
-        $validated = [
-            'book_id' => $request->book_id,
-            'word_id' => $request->word_id,
-            'index_no' => $request->index_no,
-            'definition' => $request->definition,
-        ];
-        $line->update($validated);
-        $this->updateLineUsages($line, $request->usages);
-        return redirect()->route('lines.index');
+        try {
+            DB::transaction(function () use ($request, $line) {
+                // Lineの更新
+                $line->update([
+                    'book_id' => $request->book_id,
+                    'word_id' => $request->word_id,
+                    'index_no' => $request->index_no,
+                    'definition' => $request->definition,
+                ]);
+
+                // Usageの更新
+                $this->updateLineUsages($line, $request->usages);
+            });
+
+            session()->flash('message', 'Lineを更新しました。');
+            return to_route('lines.show', $line)
+                ->with('message', 'Lineを更新しました。');
+        } catch (\Throwable $th) {
+            session()->flash('error', 'Lineの更新に失敗しました。');
+            return redirect(route('lines.index'));
+        }
     }
 
     public function updateLineUsages(Line $line, array $usages)
     {
+        // dd($line, $usages);
         foreach ($usages as $usage) {
             if (!isset($usage['id'])) {
                 // 新規追加
-                $line->usages()->crate([
-                    'example' => $usage['exam[le'],
+                $line->usages()->create([
+                    'example' => $usage['example'],
                     'translation' => $usage['translation'],
                 ]);
             } else {
                 // 既存レコードの更新
                 Usage::where('id', $usage['id'])
                     ->update([
-                        'example' => $usage['id'],
+                        'example' => $usage['example'],
                         'translation' => $usage['translation'],
                     ]);
             }

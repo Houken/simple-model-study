@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBookRequest;
 use App\Http\Requests\UpdateBookRequest;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
+use Inertia\Inertia;
 
 class BookController extends Controller
 {
@@ -13,7 +15,9 @@ class BookController extends Controller
      */
     public function index()
     {
-        //
+        $books = BookResource::collection(Book::all());
+
+        return Inertia::render('Books/Index', ['books' => $books]);
     }
 
     /**
@@ -37,7 +41,9 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        //
+        $book = new BookResource(Book::findOrFail($book->id));
+
+        return Inertia::render('Books/Show', ['book' => $book]);
     }
 
     /**
@@ -45,7 +51,9 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        $book = new BookResource(Book::findOrFail($book->id));
+
+        return Inertia::render('Books/Edit', ['book' => $book]);
     }
 
     /**

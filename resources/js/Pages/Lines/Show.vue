@@ -4,9 +4,29 @@
     <AuthenticatedLayout>
         <template #header>
             <div class="flex items-center justify-between">
-                <h2 class="font-semibold leading-tight text-gray-800 text-md dark:text-gray-200">
-                    Line: Show
-                </h2>
+                <div class="flex items-center">
+                    <h2 class="font-semibold leading-tight text-gray-800 text-md dark:text-gray-200">
+                        Line: Show
+                    </h2>
+                    <div class="flex ml-4">
+                        <Link :href="route('lines.show', { line: prevItem })">
+                        <SquareChevronLeft
+                            :size="28"
+                            :stroke-width="1"
+                            class="dark:text-white/75 dark:hover:text-white active:bg-yellow-900"
+                        />
+                        </Link>
+                        <Link :href="route('lines.show', { line: nextItem })">
+                        <SquareChevronRight
+                            :size="28"
+                            :stroke-width="1"
+                            class="dark:text-white/75 dark:hover:text-white active:bg-yellow-900"
+                        />
+                        </Link>
+                    </div>
+
+                </div>
+
                 <div>
                     <Link
                         type="button"
@@ -27,6 +47,9 @@
 
         </template>
         <div class="py-4">
+            <div v-if="flashMessages.message">
+                <p class="p-2 bg-blue-100">{{ flashMessages.message }}</p>
+            </div>
             <!-- Card Section -->
             <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-4">
                 <!-- Card -->
@@ -187,16 +210,28 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import { Line } from '@/types/models';
-import { PropType } from 'vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { FlashMessage, Line } from '@/types/models';
+import { computed, PropType } from 'vue';
 import ExampleDecode from '@/Components/ExampleDecode.vue';
 import SectionTitle from '@/Components/SectionTitle.vue';
-import { ArrowLeft, Edit, HeartOff } from 'lucide-vue-next';
+import { ArrowLeft, Edit, SquareChevronLeft, SquareChevronRight } from 'lucide-vue-next';
 
+const page = usePage();
 const props = defineProps({
     line: {
         type: Object as PropType<{ data: Line }>,
+    }
+});
+const flashMessages = computed(() => page.props.flash as FlashMessage);
+const prevItem = computed(() => {
+    if (props.line?.data.id) {
+        return props.line?.data.id - 1;
+    }
+});
+const nextItem = computed(() => {
+    if (props.line?.data.id) {
+        return props.line?.data.id + 1;
     }
 });
 </script>

@@ -5,6 +5,7 @@ export interface Book {
     publisher: string;
     published_at: number;
     version: number;
+    max_index: number;
 }
 
 export interface Word {
@@ -34,4 +35,8 @@ export interface linkObj {
     active: boolean;
     label: string;
     url: string;
+}
+
+export interface FlashMessage {
+    message?: string | null;
 }
