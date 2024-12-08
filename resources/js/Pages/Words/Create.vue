@@ -41,7 +41,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.english
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
 
 
@@ -101,10 +101,9 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, InertiaForm, router, useForm, usePage } from '@inertiajs/vue3';
-import { computed, PropType, ref, watch } from 'vue';
+import { Head, InertiaForm, useForm } from '@inertiajs/vue3';
+import { PropType } from 'vue';
 import { Word } from '@/types/models';
-import { CirclePlus, Filter } from 'lucide-vue-next';
 import SectionTitle from '@/Components/SectionTitle.vue';
 
 const form: InertiaForm<{

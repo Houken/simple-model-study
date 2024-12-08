@@ -26,22 +26,37 @@
                     </div>
 
                 </div>
+                <div class="flex items-center justify-between">
+                    <div
+                        v-if="!props.nextLineExists"
+                        class="me-4"
+                    >
+                        <button
+                            type="button"
+                            @click="createNext()"
+                            class="inline-flex items-center px-4 py-2 text-xs font-medium text-white bg-teal-500 border border-transparent rounded-lg outline outline-teal-500 outline-2 outline-offset-2 gap-x-2 hover:bg-teal-600 focus:bg-teal-600 disabled:opacity-50 disabled:pointer-events-none"
+                        >
+                            <CirclePlus :size="16" />Create Next
+                        </button>
+                    </div>
 
-                <div>
-                    <Link
-                        type="button"
-                        :href="route('lines.edit', { line: line?.data.id })"
-                        class="inline-flex items-center px-4 py-2 mr-1 text-xs font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-                    >
-                    <Edit :size="16" />Edit
-                    </Link>
-                    <button
-                        type="button"
-                        class="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
-                    >
-                        <ArrowLeft :size="16" />back to List
-                    </button>
+                    <div>
+                        <Link
+                            type="button"
+                            :href="route('lines.edit', { line: line?.data.id })"
+                            class="inline-flex items-center px-4 py-2 mr-1 text-xs font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                        >
+                        <Edit :size="16" />Edit
+                        </Link>
+                        <button
+                            type="button"
+                            class="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                        >
+                            <ArrowLeft :size="16" />back to List
+                        </button>
+                    </div>
                 </div>
+
 
             </div>
 
@@ -210,18 +225,21 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { FlashMessage, Line } from '@/types/models';
 import { computed, PropType } from 'vue';
 import ExampleDecode from '@/Components/ExampleDecode.vue';
 import SectionTitle from '@/Components/SectionTitle.vue';
-import { ArrowLeft, Edit, SquareChevronLeft, SquareChevronRight } from 'lucide-vue-next';
+import { ArrowLeft, Edit, SquareChevronLeft, SquareChevronRight, CirclePlus } from 'lucide-vue-next';
 
 const page = usePage();
 const props = defineProps({
     line: {
         type: Object as PropType<{ data: Line }>,
-    }
+    },
+    nextLineExists: {
+        type: Boolean
+    },
 });
 const flashMessages = computed(() => page.props.flash as FlashMessage);
 const prevItem = computed(() => {
@@ -234,6 +252,16 @@ const nextItem = computed(() => {
         return props.line?.data.id + 1;
     }
 });
+
+const createNext = () => {
+    let nextBookId = props.line?.data.book.id;
+    let nextIndexNo = (props.line?.data.index_no || 0) + 1;
+    console.log(nextBookId, nextIndexNo);
+    return router.get(route('lines.create'), {
+        nextBookId: nextBookId,
+        nextIndexNo: nextIndexNo,
+    })
+}
 </script>
 
 <style scoped></style>

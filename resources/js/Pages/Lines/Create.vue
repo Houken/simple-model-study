@@ -66,13 +66,13 @@
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <SectionTitle title="Word info.">
-                                <Link
-                                    :href="route('words.create')"
+                                <button
+                                    @click="createNewWord()"
                                     type="button"
                                     class="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
                                 >
-                                <Plus :size="16" />New Word
-                                </Link>
+                                    <Plus :size="16" />New Word
+                                </button>
                             </SectionTitle>
                             <!-- End Col -->
 
@@ -102,7 +102,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.word_id
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
 
                             <div class="relative sm:col-start-4 sm:col-span-9">
@@ -189,7 +189,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.index_no
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
 
                             <div class="sm:col-span-3">
@@ -215,7 +215,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.definition
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
                         </div>
                         <!-- End Section -->
@@ -309,24 +309,12 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, InertiaForm, Link, router, useForm, usePage } from '@inertiajs/vue3';
-import { computed, nextTick, PropType, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, PropType, ref, watch } from 'vue';
 import { Book, Word, Usage } from '@/types/models';
 import { CirclePlus, Filter, Plus } from 'lucide-vue-next';
 import SectionTitle from '@/Components/SectionTitle.vue';
+import { useRoute } from '../../../../vendor/tightenco/ziggy/src/js';
 
-const form: InertiaForm<{
-    book_id?: number | string,
-    word_id?: number,
-    index_no?: number,
-    definition: string,
-    usages: Usage[],
-}> = useForm({
-    book_id: "",
-    word_id: undefined,
-    index_no: undefined,
-    definition: '',
-    usages: [] as Usage[],
-});
 
 const props = defineProps({
     books: {
@@ -341,7 +329,28 @@ const props = defineProps({
         type: Object as PropType<Word>,
         default: () => { }
     },
+    nextBookId: {
+        type: Number,
+    },
+    nextIndexNo: {
+        type: Number,
+    },
 });
+
+const form: InertiaForm<{
+    book_id?: number | string,
+    word_id?: number,
+    index_no?: number,
+    definition: string,
+    usages: Usage[],
+}> = useForm('CreateLine', {
+    book_id: props.nextBookId ? props.nextBookId : 0,
+    word_id: undefined,
+    index_no: props.nextIndexNo ? props.nextIndexNo : 0,
+    definition: '',
+    usages: [] as Usage[],
+});
+
 
 let books = ref<Book[]>(props.books ?? []),
     book_id = ref(""),
@@ -388,4 +397,39 @@ const selectThisWord = (id: number | undefined) => {
 let selectedWord = computed(() => {
     return props.words.find(word => word.id === form.word_id)?.english;
 })
+
+const createNewWord = () => {
+    const currentPage = usePage();
+    const currentPath = currentPage.url;
+    console.log(currentPath);
+    return router.get(route('words.create', { previousPage: currentPath }))
+}
+
+// このページがロードされたとき、フォームデータの復元をする
+onMounted(() => {
+    restoreFormData();
+})
+
+// セッションストレージから保存されたフォームデータを取得し、
+// 内容があればその内容でフォームを初期化する。
+// 内容がなければ初期化しない。
+const restoreFormData = () => {
+    const saveData = sessionStorage.getItem('lines_create_form_data');
+    if (saveData) {
+        const data = JSON.parse(saveData);
+        form.reset(data);
+    }
+};
+
+// フォームの内容に変更があれば、一時保存する
+watch(form, (newValue) => {
+    if (Object.keys(newValue).length > 0) {
+        saveFormData();
+    }
+})
+
+// フォームデータの一時保存処理
+const saveFormData = () => {
+    sessionStorage.setItem('lines_create_form_data', JSON.stringify(form));
+}
 </script>

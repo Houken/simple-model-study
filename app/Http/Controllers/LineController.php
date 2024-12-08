@@ -13,6 +13,7 @@ use App\Models\Word;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
+use LengthException;
 use Symfony\Component\CssSelector\Node\FunctionNode;
 
 class LineController extends Controller
@@ -67,10 +68,14 @@ class LineController extends Controller
             $word = [];
         }
         $books = Book::all();
+        $nextBookId = $request->nextBookId ? intval($request->nextBookId) : 0;
+        $nextIndexNo = $request->nextIndexNo ? intval($request->nextIndexNo) : 0;
         return Inertia::render('Lines/Create', [
             'books' => $books,
             'words' => $words,
             'word' => $word,
+            'nextBookId' => $nextBookId,
+            'nextIndexNo' => $nextIndexNo,
         ]);
     }
 
@@ -115,8 +120,11 @@ class LineController extends Controller
     public function show(Line $line)
     {
         $line = new LineResource(Line::findOrFail($line->id));
+        $bookId = $line->book_id;
+        $nextIndex = $line->index_no + 1;
+        $nextLineExists = Line::where('book_id', $bookId)->where('index_no', $nextIndex)->exists();
 
-        return Inertia::render('Lines/Show', ['line' => $line]);
+        return Inertia::render('Lines/Show', ['line' => $line, 'nextLineExists' => $nextLineExists]);
     }
 
     /**
