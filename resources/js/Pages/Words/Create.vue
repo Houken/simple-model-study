@@ -41,7 +41,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.english
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
 
 
@@ -102,7 +102,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, InertiaForm, useForm } from '@inertiajs/vue3';
-import { PropType } from 'vue';
+import { onMounted, PropType } from 'vue';
 import { Word } from '@/types/models';
 import SectionTitle from '@/Components/SectionTitle.vue';
 
@@ -121,5 +121,9 @@ const props = defineProps({
         type: Object as PropType<Word>,
         default: () => { }
     },
+});
+
+onMounted(() => {
+    document.getElementById('word-english')?.focus();
 });
 </script>

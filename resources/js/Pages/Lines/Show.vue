@@ -9,20 +9,40 @@
                         Line: Show
                     </h2>
                     <div class="flex ml-4">
-                        <Link :href="route('lines.show', { line: prevItem })">
+                        <div v-if="!prevItem">
+                            <SquareChevronLeft
+                                :size="28"
+                                :stroke-width="1"
+                                class="dark:text-white/75 opacity-20 dark:hover:text-white active:bg-yellow-900"
+                            />
+                        </div>
+                        <Link
+                            :href="route('lines.show', { line: prevItem })"
+                            v-if="prevItem"
+                        >
                         <SquareChevronLeft
                             :size="28"
                             :stroke-width="1"
                             class="dark:text-white/75 dark:hover:text-white active:bg-yellow-900"
                         />
                         </Link>
-                        <Link :href="route('lines.show', { line: nextItem })">
+                        <Link
+                            :href="route('lines.show', { line: nextItem })"
+                            v-if="props.nextLineExists"
+                        >
                         <SquareChevronRight
                             :size="28"
                             :stroke-width="1"
                             class="dark:text-white/75 dark:hover:text-white active:bg-yellow-900"
                         />
                         </Link>
+                        <div v-if="!props.nextLineExists">
+                            <SquareChevronRight
+                                :size="28"
+                                :stroke-width="1"
+                                class="dark:text-white/75 opacity-10 dark:hover:text-white active:bg-yellow-900"
+                            />
+                        </div>
                     </div>
 
                 </div>
@@ -243,8 +263,10 @@ const props = defineProps({
 });
 const flashMessages = computed(() => page.props.flash as FlashMessage);
 const prevItem = computed(() => {
-    if (props.line?.data.id) {
+    if (props.line?.data.id && props.line?.data.id > 1) {
         return props.line?.data.id - 1;
+    } else {
+        return false;
     }
 });
 const nextItem = computed(() => {
