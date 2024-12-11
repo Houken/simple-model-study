@@ -29,19 +29,32 @@
                             <!-- End Col -->
 
                             <div class="sm:col-span-9">
-                                <input
-                                    v-model="form.english"
-                                    id="word-english"
-                                    type="text"
-                                    class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                >
+                                <div class="flex items-center">
+                                    <input
+                                        v-model="form.english"
+                                        id="word-english"
+                                        type="text"
+                                        class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                    >
+                                    <button
+                                        @click="insertTilde('word-english', '〜')"
+                                        type="button"
+                                        class="ml-2 flex shrink-0 justify-center items-center gap-2 size-[38px] text-sm font-medium rounded-lg border border-transparent bg-blue-300 text-white hover:bg-blue-400 focus:outline-none focus:bg-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                    >〜</button>
+                                    <button
+                                        @click="insertTilde('word-english', '…')"
+                                        type="button"
+                                        class="ml-2 flex shrink-0 justify-center items-center gap-2 size-[38px] text-sm font-medium rounded-lg border border-transparent bg-blue-300 text-white hover:bg-blue-400 focus:outline-none focus:bg-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                    >…</button>
+                                </div>
+
                             </div>
                             <div
                                 v-if="form.errors.english"
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.english
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
 
 
@@ -62,6 +75,16 @@
                                     type="text"
                                     class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                 >
+                                <input
+                                    type="text"
+                                    list="part_of_speech_list"
+                                    v-model="form.part_of_speech"
+                                    placeholder="品詞を入力・選択"
+                                    class="mt-2 rounded-md bg-slate-50 border-slate-400"
+                                >
+                                <datalist id="part_of_speech_list">
+                                    <option v-for="pos in props.list_of_part_of_speech">{{ pos }}</option>
+                                </datalist>
                             </div>
                             <div
                                 v-if="form.errors.part_of_speech"
@@ -121,9 +144,28 @@ const props = defineProps({
         type: Object as PropType<Word>,
         default: () => { }
     },
+    list_of_part_of_speech: {
+        type: Array,
+        default: [],
+    },
 });
 
 onMounted(() => {
     document.getElementById('word-english')?.focus();
 });
+
+// キャレット位置にティルダなどを挿入
+const insertTilde = (id: string, special: string) => {
+    // 指定されたidで、目的の入力ボックスを決定
+    const input = document.getElementById(id) as HTMLInputElement;
+    // キャレット位置と入力値を取得
+    const position = input.selectionStart || 0;
+    const text = input.value || "";
+
+    // 指定された文字をキャレットの位置に挿入し、入力値と置き換える
+    const newValue = text.slice(0, position) + special + text.slice(position);
+    form.english = newValue;
+    // 挿入した文字に合わせて、キャレット位置をずらす
+    input.setSelectionRange(position + 1, position + 1);
+}
 </script>

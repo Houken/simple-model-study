@@ -335,6 +335,10 @@ const props = defineProps({
     nextIndexNo: {
         type: Number,
     },
+    newWordId: {
+        type: Number,
+        default: usePage().props.newWordId,
+    },
 });
 
 const form: InertiaForm<{
@@ -345,7 +349,7 @@ const form: InertiaForm<{
     usages: Usage[],
 }> = useForm('CreateLine', {
     book_id: props.nextBookId ? props.nextBookId : 0,
-    word_id: undefined,
+    word_id: props.newWordId ? props.newWordId : undefined,
     index_no: props.nextIndexNo ? props.nextIndexNo : 0,
     definition: '',
     usages: [] as Usage[],

@@ -22,7 +22,8 @@ class WordController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Words/Create');
+        $listOfPartOfSpeech = Word::select('part_of_speech')->distinct()->pluck('part_of_speech');
+        return Inertia::render('Words/Create', ['list_of_part_of_speech' => $listOfPartOfSpeech]);
     }
 
     /**
@@ -39,10 +40,11 @@ class WordController extends Controller
         // dd($word);
         $redirectTo = session()->get('redirect_to') ?? '/dashboard';
         $newWordId = $word->id;
+        // dd($newWordId);
 
         return redirect($redirectTo)->with([
             'success' => '新しい単語が保存されました。',
-            'new_word_id' => $newWordId,
+            'newWordId' => $newWordId,
         ]);
     }
 
