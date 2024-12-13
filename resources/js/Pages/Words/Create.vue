@@ -14,7 +14,7 @@
             <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-4">
                 <!-- Card -->
                 <div class="p-4 bg-white shadow rounded-xl sm:p-7 dark:bg-slate-800">
-                    <form @submit.prevent="form.post(route('words.store'))">
+                    <form @submit.prevent="storeNewWord">
                         <!-- Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
@@ -124,7 +124,7 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, InertiaForm, useForm } from '@inertiajs/vue3';
+import { Head, InertiaForm, useForm, usePage } from '@inertiajs/vue3';
 import { onMounted, PropType } from 'vue';
 import { Word } from '@/types/models';
 import SectionTitle from '@/Components/SectionTitle.vue';
@@ -148,6 +148,21 @@ const props = defineProps({
         type: Array,
         default: [],
     },
+    previousUrl: {
+        type: String,
+        default: '',
+    },
+    nameOfPreviousRoute: {
+        type: String,
+        default: '',
+    },
+    bookId: {
+        type: Number,
+    },
+    indexNo: {
+        type: Number,
+    }
+
 });
 
 onMounted(() => {
@@ -167,5 +182,17 @@ const insertTilde = (id: string, special: string) => {
     form.english = newValue;
     // 挿入した文字に合わせて、キャレット位置をずらす
     input.setSelectionRange(position + 1, position + 1);
+}
+
+const storeNewWord = () => {
+    form
+        .transform((data) => ({
+            ...data,
+            previous: props.previousUrl,
+            nameOfPreviousRoute: props.nameOfPreviousRoute,
+            bookId: props.bookId,
+            indexNo: props.indexNo,
+        }))
+        .post(route('words.store'))
 }
 </script>

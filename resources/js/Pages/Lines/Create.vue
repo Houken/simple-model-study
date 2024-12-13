@@ -14,6 +14,7 @@
             <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-4">
                 <!-- Card -->
                 <div class="p-4 bg-white shadow rounded-xl sm:p-7 dark:bg-slate-800">
+
                     <form @submit.prevent="form.post(route('lines.store'))">
                         <!-- Section -->
                         <div
@@ -308,13 +309,14 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, InertiaForm, Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { Head, InertiaForm, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, nextTick, onMounted, PropType, ref, watch } from 'vue';
 import { Book, Word, Usage } from '@/types/models';
 import { CirclePlus, Filter, Plus } from 'lucide-vue-next';
 import SectionTitle from '@/Components/SectionTitle.vue';
-import { useRoute } from '../../../../vendor/tightenco/ziggy/src/js';
+import { PageProps } from '@/types/index';
 
+const page = usePage();
 
 const props = defineProps({
     books: {
@@ -335,10 +337,15 @@ const props = defineProps({
     nextIndexNo: {
         type: Number,
     },
-    newWordId: {
-        type: Number,
-        default: usePage().props.newWordId,
-    },
+});
+
+// このページがロードされたとき、フォームデータの復元をする
+onMounted(() => {
+    restoreFormData();
+})
+
+let newWordId = computed(() => {
+    return page.props.flash.newWordId;
 });
 
 const form: InertiaForm<{
@@ -349,7 +356,7 @@ const form: InertiaForm<{
     usages: Usage[],
 }> = useForm('CreateLine', {
     book_id: props.nextBookId ? props.nextBookId : 0,
-    word_id: props.newWordId ? props.newWordId : undefined,
+    word_id: newWordId ?? undefined,
     index_no: props.nextIndexNo ? props.nextIndexNo : 0,
     definition: '',
     usages: [] as Usage[],
@@ -394,25 +401,36 @@ watch(
     }
 );
 
-const selectThisWord = (id: number | undefined) => {
+const selectThisWord = (id: number) => {
     form.word_id = id;
 }
 
 let selectedWord = computed(() => {
-    return props.words.find(word => word.id === form.word_id)?.english;
+    if (newWordId.value > 0) {
+        return props.words.find(word => word.id === newWordId.value)?.english;
+    } else {
+        return props.words.find(word => word.id === form.word_id)?.english;
+    }
 })
 
+// New Wordボタンの処理
 const createNewWord = () => {
-    const currentPage = usePage();
-    const currentPath = currentPage.url;
-    console.log(currentPath);
-    return router.get(route('words.create', { previousPage: currentPath }))
-}
+    // 戻り先はlines.create
+    let fromLinesCreate = true;
 
-// このページがロードされたとき、フォームデータの復元をする
-onMounted(() => {
-    restoreFormData();
-})
+    // 戻り先のurlを作成
+    const currentUrl = '/lines/create?nextBookId=' + props.nextBookId + '&nextIndexNo=' + props.nextIndexNo;
+
+    // 持っていくパラメータをオブジェクトにする
+    let parameters = {
+        bookId: props.nextBookId,
+        indexNo: props.nextIndexNo,
+        fromLinesCreate: fromLinesCreate,
+        previous: currentUrl,
+    };
+    // word.createルートを開く。引数は戻り先のurlを含むパラメータのセット
+    router.get('/words/create', parameters);
+}
 
 // セッションストレージから保存されたフォームデータを取得し、
 // 内容があればその内容でフォームを初期化する。

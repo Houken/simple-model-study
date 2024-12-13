@@ -57,10 +57,10 @@ class LineController extends Controller
             $this->applyWordFilter($wordsQuery, $wordFilter);
             $words = $wordsQuery->limit(10)->get();
             $word = [];
-        } else if ($request->wordId) {
+        } else if ($request->newWordId) {
             // 絞り込み文字列はないが、wordの指定がある場合
             $words = [];
-            $wordId = $request->wordId;
+            $wordId = $request->newWordId;
             $word = Word::findOrFail($wordId);
         } else {
             // 絞り込みも指定もない場合

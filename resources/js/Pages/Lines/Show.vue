@@ -82,8 +82,8 @@
 
         </template>
         <div class="py-4">
-            <div v-if="flashMessages.message">
-                <p class="p-2 bg-blue-100">{{ flashMessages.message }}</p>
+            <div v-if="$page.props.flash.message">
+                <p class="p-2 bg-blue-100">{{ $page.props.flash.message }}</p>
             </div>
             <!-- Card Section -->
             <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-4">
@@ -261,7 +261,7 @@ const props = defineProps({
         type: Boolean
     },
 });
-const flashMessages = computed(() => page.props.flash as FlashMessage);
+
 const prevItem = computed(() => {
     if (props.line?.data.id && props.line?.data.id > 1) {
         return props.line?.data.id - 1;
@@ -278,7 +278,7 @@ const nextItem = computed(() => {
 const createNext = () => {
     let nextBookId = props.line?.data.book.id;
     let nextIndexNo = (props.line?.data.index_no || 0) + 1;
-    console.log(nextBookId, nextIndexNo);
+    // console.log(nextBookId, nextIndexNo);
     return router.get(route('lines.create'), {
         nextBookId: nextBookId,
         nextIndexNo: nextIndexNo,
