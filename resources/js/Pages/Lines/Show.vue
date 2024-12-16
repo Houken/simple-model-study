@@ -279,7 +279,7 @@ const createNext = () => {
     let nextBookId = props.line?.data.book.id;
     let nextIndexNo = (props.line?.data.index_no || 0) + 1;
     // console.log(nextBookId, nextIndexNo);
-    return router.get(route('lines.create'), {
+    return router.get(route('lines.recreate'), {
         nextBookId: nextBookId,
         nextIndexNo: nextIndexNo,
     })

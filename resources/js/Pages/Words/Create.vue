@@ -54,7 +54,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.english
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
 
 

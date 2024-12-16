@@ -16,7 +16,7 @@
                 <div class="p-4 bg-white shadow rounded-xl sm:p-7 dark:bg-slate-800">
 
                     <form @submit.prevent="form.post(route('lines.store'))">
-                        <!-- Section -->
+                        <!-- Book Info Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <SectionTitle
@@ -63,12 +63,12 @@
                         </div>
                         <!-- End Section -->
 
-                        <!-- Section -->
+                        <!-- Word Info Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <SectionTitle title="Word info.">
                                 <button
-                                    @click="createNewWord()"
+                                    @click="showCreateNewWordForm()"
                                     type="button"
                                     class="inline-flex items-center px-3 py-2 text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
                                 >
@@ -76,6 +76,82 @@
                                 </button>
                             </SectionTitle>
                             <!-- End Col -->
+                            <div
+                                v-show="creatingNewWord"
+                                class="grid grid-cols-12 gap-2 py-4 -mt-4 shadow-inner px-7 -mx-7 sm:col-span-12 bg-teal-50"
+                            >
+                                <div class="sm:col-span-3">
+                                    <label
+                                        for="new-word-english"
+                                        class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
+                                    >
+                                        New Word
+                                    </label>
+                                </div>
+                                <!-- End Col -->
+
+                                <div class="sm:col-span-6 bg-teal-50">
+                                    <input
+                                        v-model="newWordEnglish"
+                                        id="new-word-english"
+                                        class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-100 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                    />
+                                </div>
+                                <!-- End Col -->
+                                <div class="inline-flex sm:col-span-3">
+                                    <button
+                                        @click="insertSpecialChar('new-word-english', '〜')"
+                                        type="button"
+                                        class="ml-2 flex shrink-0 justify-center items-center gap-2 size-[38px] text-sm font-medium rounded-lg border border-transparent bg-blue-300 text-white hover:bg-blue-400 focus:outline-none focus:bg-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                    >〜</button>
+                                    <button
+                                        @click="insertSpecialChar('new-word-english', '…')"
+                                        type="button"
+                                        class="ml-2 flex shrink-0 justify-center items-center gap-2 size-[38px] text-sm font-medium rounded-lg border border-transparent bg-blue-300 text-white hover:bg-blue-400 focus:outline-none focus:bg-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                                    >…</button>
+                                </div>
+                                <!-- End Col -->
+                                <div class="sm:col-span-3">
+                                    <label
+                                        for="new-word-part-of-speech"
+                                        class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
+                                    >
+                                        Part of Speech
+                                    </label>
+                                </div>
+                                <!-- End Col -->
+
+                                <div class="sm:col-span-9 bg-teal-50">
+                                    <input
+                                        v-model="newWordPos"
+                                        list="part_of_speech_list"
+                                        id="new-word-part-of-speech"
+                                        class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-100 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-800 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                    />
+                                    <datalist id="part_of_speech_list">
+                                        <option v-for="pos in props.listOfPoses">{{ pos }}</option>
+                                    </datalist>
+                                </div>
+                                <!-- End Col -->
+                                <div class="flex items-center justify-end mt-2 sm:col-span-12">
+                                    <button
+                                        @click="creatingNewWord = false;"
+                                        type="button"
+                                        class="inline-flex items-center px-3 py-2 mr-1 text-xs font-medium text-yellow-800 bg-yellow-100 border border-transparent rounded-lg gap-x-2 hover:bg-yellow-200 focus:outline-none focus:bg-yellow-200 disabled:opacity-50 disabled:pointer-events-none dark:text-yellow-500 dark:bg-yellow-800/30 dark:hover:bg-yellow-800/20 dark:focus:bg-yellow-800/20"
+                                    >
+                                        <CircleX :size="16" />Cancel
+                                    </button>
+                                    <button
+                                        @click="storeNewWordFromLine"
+                                        type="button"
+                                        class="inline-flex items-center px-3 py-2 text-xs font-medium text-red-800 bg-red-100 border border-transparent rounded-lg gap-x-2 hover:bg-red-200 focus:outline-none focus:bg-red-200 disabled:opacity-50 disabled:pointer-events-none dark:text-red-500 dark:bg-red-800/30 dark:hover:bg-red-800/20 dark:focus:bg-red-800/20"
+                                    >
+                                        Store New Word</button>
+                                </div>
+                                <!-- /.sm:col-span-3 -->
+                                <!-- End Col -->
+                            </div>
+
 
                             <div class="sm:col-span-3">
                                 <h2 class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500">
@@ -161,7 +237,7 @@
                         </div>
                         <!-- End Section -->
 
-                        <!-- Section -->
+                        <!-- Line Info Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <SectionTitle title="Line info." />
@@ -312,9 +388,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, InertiaForm, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, nextTick, onMounted, PropType, ref, watch } from 'vue';
 import { Book, Word, Usage } from '@/types/models';
-import { CirclePlus, Filter, Plus } from 'lucide-vue-next';
+import { CirclePlus, CircleX, Filter, Plus } from 'lucide-vue-next';
 import SectionTitle from '@/Components/SectionTitle.vue';
-import { PageProps } from '@/types/index';
+// import { PageProps } from '@/types/index';
+import { insertSpecialChar } from '@/Utils/InputUtils';
 
 const page = usePage();
 
@@ -337,8 +414,24 @@ const props = defineProps({
     nextIndexNo: {
         type: Number,
     },
+    listOfPoses: {
+        type: Array,
+    },
 });
 
+// word.create関連
+let newWordEnglish = ref('');
+let newWordPos = ref('');
+
+const storeNewWordFromLine = () => {
+    let data = {
+        english: newWordEnglish.value,
+        part_of_speech: newWordPos.value,
+    };
+
+    let res = router.put(route('word.storeFromLine'), data);
+    console.log(res);
+}
 // このページがロードされたとき、フォームデータの復元をする
 onMounted(() => {
     restoreFormData();
@@ -371,7 +464,11 @@ let books = ref<Book[]>(props.books ?? []),
 
 const isValidUsage = computed(() => {
     let usagesLength = form.usages.length;
-    if (usagesLength === 0) { return true } else { return form.usages.length > 0 && !!form.usages[form.usages.length - 1]?.example && !!form.usages[form.usages.length - 1]?.translation; }
+    if (usagesLength === 0) {
+        return true
+    } else {
+        return form.usages.length > 0 && !!form.usages[form.usages.length - 1]?.example && !!form.usages[form.usages.length - 1]?.translation;
+    }
 
 });
 
@@ -401,8 +498,10 @@ watch(
     }
 );
 
-const selectThisWord = (id: number) => {
-    form.word_id = id;
+const selectThisWord = (id: number | undefined) => {
+    if (id !== undefined) {
+        form.word_id = id;
+    }
 }
 
 let selectedWord = computed(() => {
@@ -414,22 +513,10 @@ let selectedWord = computed(() => {
 })
 
 // New Wordボタンの処理
-const createNewWord = () => {
-    // 戻り先はlines.create
-    let fromLinesCreate = true;
+const creatingNewWord = ref(false);
 
-    // 戻り先のurlを作成
-    const currentUrl = '/lines/create?nextBookId=' + props.nextBookId + '&nextIndexNo=' + props.nextIndexNo;
-
-    // 持っていくパラメータをオブジェクトにする
-    let parameters = {
-        bookId: props.nextBookId,
-        indexNo: props.nextIndexNo,
-        fromLinesCreate: fromLinesCreate,
-        previous: currentUrl,
-    };
-    // word.createルートを開く。引数は戻り先のurlを含むパラメータのセット
-    router.get('/words/create', parameters);
+const showCreateNewWordForm = () => {
+    creatingNewWord.value = creatingNewWord.value ? false : true;
 }
 
 // セッションストレージから保存されたフォームデータを取得し、

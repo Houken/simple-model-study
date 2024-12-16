@@ -32,7 +32,7 @@ class WordController extends Controller
         } else {
             $nameOfPreviousRoute = 'words.index';
         }
-        $listOfPartOfSpeech = Word::select('part_of_speech')->distinct()->pluck('part_of_speech');
+        $listOfPartOfSpeech = $this->getListOfPoses();
         return Inertia::render('Words/Create', [
             'list_of_part_of_speech' => $listOfPartOfSpeech,
             'previousUrl' => $previous,
@@ -40,6 +40,13 @@ class WordController extends Controller
             'bookId' => $bookId,
             'indexNo' => $indexNo,
         ]);
+    }
+
+    public function getListOfPoses()
+    {
+        $theList = Word::select('part_of_speech')->distinct()->pluck('part_of_speech');
+
+        return $theList;
     }
 
     /**
@@ -71,6 +78,16 @@ class WordController extends Controller
             'nextIndexNo' => $indexNo,
             'newWordId' => $newWordId,
         ])->with($message);
+    }
+
+    public function storeFromCreateLine(StoreWordRequest $request)
+    {
+        $word = Word::create([
+            'english' => $request->english,
+            'part_of_speech' => $request->part_of_speech,
+        ]);
+
+        return response()->json(['id' => $word->id], 201);
     }
 
     /**

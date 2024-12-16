@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\RouteHelper;
 use App\Http\Requests\StoreLineRequest;
 use App\Http\Requests\UpdateLineRequest;
 use App\Http\Resources\BookResource;
@@ -10,14 +11,17 @@ use App\Models\Book;
 use App\Models\Line;
 use App\Models\Usage;
 use App\Models\Word;
+use App\Traits\HasPreviousRouteInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
 use LengthException;
 use Symfony\Component\CssSelector\Node\FunctionNode;
 
 class LineController extends Controller
 {
+    use HasPreviousRouteInfo;
     /**
      * Display a listing of the resource.
      */
@@ -70,12 +74,48 @@ class LineController extends Controller
         $books = Book::all();
         $nextBookId = $request->nextBookId ? intval($request->nextBookId) : 0;
         $nextIndexNo = $request->nextIndexNo ? intval($request->nextIndexNo) : 0;
+        $wordController = new WordController();
+        $listOfPoses = $wordController->getListOfPoses();
         return Inertia::render('Lines/Create', [
             'books' => $books,
             'words' => $words,
             'word' => $word,
             'nextBookId' => $nextBookId,
             'nextIndexNo' => $nextIndexNo,
+            'listOfPoses' => $listOfPoses,
+        ]);
+    }
+
+    public function recreate(Request $request)
+    {
+        // 遷移元を取得
+        $previousRouteAndParams = $this->getPreviousRouteAndParams();
+        // Booksドロップダウン用のデータを用意
+        $books = Book::all();
+        // 新規word作成用の品詞リストを用意
+        $wordController = new WordController;
+        $listOfPoses = $wordController->getListOfPoses();
+        // Create Next用のprop
+        $nextBookId = intval($request->nextBookId) ?? null;
+        $nextIndexNo = intval($request->nextIndexNo) ?? null;
+
+        // wordの絞り込み処理
+        if ($request->wordFilter) {
+            $wordsQuery = Word::query();
+            $wordFilter = $request->wordFilter;
+            $this->applyWordFilter($wordsQuery, $wordFilter);
+            $words = $wordsQuery->limit(10)->get();
+        } else {
+            $words = [];
+        }
+
+        return Inertia::render('Lines/Recreate', [
+            'books' => $books,
+            'listOfPoses' => $listOfPoses,
+            'words' => $words,
+            'nextBookId' => $nextBookId,
+            'nextIndexNo' => $nextIndexNo,
+            'previousRouteAndParams' => $previousRouteAndParams,
         ]);
     }
 

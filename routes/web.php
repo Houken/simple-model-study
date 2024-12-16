@@ -22,11 +22,13 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/lines/recreate', [LineController::class, 'recreate'])->name('lines.recreate');
     Route::resource('/lines', LineController::class);
     // Route::get('/words/create', function () {
     //     session(['redirect_to' => url()->previous()]);
     //     return app(WordController::class)->create();
     // })->name('words.create');
+    Route::put('/word/store-from-line', [WordController::class, 'storeFromCreateLine'])->name('word.storeFromLine');
     Route::resource('/words', WordController::class);
     // ->except(['create']);
     Route::resource('/books', BookController::class)->except(['create']);
