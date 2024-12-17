@@ -390,7 +390,7 @@ import { computed, nextTick, onMounted, PropType, ref, watch } from 'vue';
 import { Book, Word, Usage } from '@/types/models';
 import { CirclePlus, CircleX, Filter, Plus } from 'lucide-vue-next';
 import SectionTitle from '@/Components/SectionTitle.vue';
-// import { PageProps } from '@/types/index';
+import { PageProps } from '@/types/index';
 import { insertSpecialChar } from '@/Utils/InputUtils';
 
 const page = usePage();

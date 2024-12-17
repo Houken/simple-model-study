@@ -22,3 +22,25 @@ export function insertTextAtCursor(
 ): void {
     insertAtCursor(element, text);
 }
+
+export function encloseSentencesInQuotes(elementId: string, quote: string) {
+    const element = document.getElementById(elementId) as HTMLInputElement;
+    const selectionStart = element.selectionStart || 0;
+    const selectionEnd = element.selectionEnd || 0;
+    if (selectionStart < selectionEnd) {
+        const textBefore = element.value.substring(0, selectionStart);
+        const textSelected = element.value.substring(
+            selectionStart,
+            selectionEnd,
+        );
+        const textAfter = element.value.substring(selectionEnd);
+
+        const quotedText =
+            textBefore + quote + textSelected + quote + textAfter;
+
+        element.value = quotedText;
+
+        element.focus();
+        element.setSelectionRange(selectionEnd + 1, selectionEnd + 1);
+    }
+}

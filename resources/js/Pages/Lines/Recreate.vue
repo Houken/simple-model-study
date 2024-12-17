@@ -347,7 +347,7 @@
                                 <!-- End Usages Example 1 Label Col -->
 
                                 <!-- Usages Example 1 Input Column -->
-                                <div class="sm:col-span-9">
+                                <div class="sm:col-span-7">
                                     <input
                                         v-model="usage.example"
                                         :id="'usage-example-' + (index + 1)"
@@ -356,6 +356,21 @@
                                     >
                                 </div>
                                 <!-- End Usages Example 1 Input Col -->
+
+                                <!-- Usages Example 1 Quotes Column -->
+                                <div class="inline-flex sm:col-span-2 gap-x-2">
+                                    <EncloseInQuotes
+                                        :element-id="`usage-example-${index + 1}`"
+                                        quote="*"
+                                        base-color="teal"
+                                    />
+                                    <EncloseInQuotes
+                                        :element-id="`usage-example-${index + 1}`"
+                                        quote="`"
+                                        base-color="blue"
+                                    />
+                                </div>
+                                <!-- End Usages Example 1 Quotes Col -->
 
                                 <!-- Usages Translation 1 Label Column -->
                                 <div class="sm:col-span-3">
@@ -369,7 +384,7 @@
                                 <!-- End Usages Translation 1 Label Col -->
 
                                 <!-- Usages Translation 1 Inout Column -->
-                                <div class="sm:col-span-9">
+                                <div class="sm:col-span-7">
                                     <input
                                         v-model="usage.translation"
                                         :id="'usage-translation-' + (index + 1)"
@@ -378,6 +393,20 @@
                                     >
                                 </div>
                                 <!-- End Usages Translation 1 Inout Col -->
+
+
+                                <!-- Usages Example 1 Quotes Column -->
+                                <div class="inline-flex sm:col-span-2 gap-x-2">
+                                    <EncloseInQuotes
+                                        :element-id="`usage-translation-${index + 1}`"
+                                        quote="*"
+                                    />
+                                    <EncloseInQuotes
+                                        :element-id="`usage-translation-${index + 1}`"
+                                        quote="`"
+                                    />
+                                </div>
+                                <!-- End Usages Example 1 Quotes Col -->
                             </div>
                             <!-- End Usages Details Col -->
 
@@ -431,11 +460,12 @@
 import SectionTitle from '@/Components/SectionTitle.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Book, Word, Usage } from '@/types/models';
-import { insertSpecialChar } from '@/Utils/InputUtils';
+import { encloseSentencesInQuotes, insertSpecialChar } from '@/Utils/InputUtils';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { CirclePlus, CircleX, Database, Plus } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, PropType, ref, watch } from 'vue';
 import { ParameterValue } from '../../../../vendor/tightenco/ziggy/src/js';
+import EncloseInQuotes from '@/Components/EncloseInQuotes.vue';
 
 // Variables --------
 // --- Props
@@ -497,19 +527,17 @@ const cancelCreateNewWord = () => {
 
 // --- Store New Word Button
 const storeNewWord = async () => {
+
     let dataToStore = {
         english: newEnglish.value,
         part_of_speech: newPartOfSpeech.value,
     };
-    try {
-        let res = await router.put(route('word.storeFromLine'), dataToStore);
-        console.log('res is ', res);
-        creatingNewWord.value = false;
-        newEnglish.value = '';
-        newPartOfSpeech.value = '';
-    } catch (error) {
-        console.log('Error: 単語は保存されませんでした。');
-    }
+
+    const response = router.put(route('word.storeFromLine'), dataToStore);
+
+    creatingNewWord.value = false;
+    newEnglish.value = '';
+    newPartOfSpeech.value = '';
 }
 
 

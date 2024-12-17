@@ -82,9 +82,9 @@
 
         </template>
         <div class="py-4">
-            <div v-if="$page.props.flash.message">
+            <!-- <div v-if="$page.props.flash.message">
                 <p class="p-2 bg-blue-100">{{ $page.props.flash.message }}</p>
-            </div>
+            </div> -->
             <!-- Card Section -->
             <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-4">
                 <!-- Card -->

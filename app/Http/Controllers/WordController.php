@@ -86,8 +86,6 @@ class WordController extends Controller
             'english' => $request->english,
             'part_of_speech' => $request->part_of_speech,
         ]);
-
-        return response()->json(['id' => $word->id], 201);
     }
 
     /**
