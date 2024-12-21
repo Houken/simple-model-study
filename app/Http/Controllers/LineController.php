@@ -32,7 +32,7 @@ class LineController extends Controller
         $this->applyLineFilterByWord($linesQuery, $wordFilter);
         $lines = LineResource::collection($linesQuery->paginate(15));
         $books = BookResource::collection(Book::all());
-        // dd($lines);
+
         return Inertia::render('Lines/Index', [
             'lines' => $lines,
             'books' => $books,
@@ -48,10 +48,24 @@ class LineController extends Controller
         });
     }
 
+    public function reorderTest(Request $request)
+    {
+        $linesQuery = Line::bookFilter($request)->indexNoFilter($request);
+        $wordFilter = $request->wordFilter;
+        $this->applyLineFilterByWord($linesQuery, $wordFilter);
+        $lines = LineResource::collection($linesQuery->paginate(15));
+        $books = BookResource::collection(Book::all());
+
+        return Inertia::render('Lines/ReorderTest', [
+            'lines' => $lines,
+            'books' => $books,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function createOld(Request $request)
     {
 
         if ($request->wordFilter) {
@@ -86,7 +100,7 @@ class LineController extends Controller
         ]);
     }
 
-    public function recreate(Request $request)
+    public function create(Request $request)
     {
         // 遷移元を取得
         $previousRouteAndParams = $this->getPreviousRouteAndParams();
@@ -109,7 +123,7 @@ class LineController extends Controller
             $words = [];
         }
 
-        return Inertia::render('Lines/Recreate', [
+        return Inertia::render('Lines/Create', [
             'books' => $books,
             'listOfPoses' => $listOfPoses,
             'words' => $words,

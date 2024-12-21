@@ -5,13 +5,15 @@
         <template #header>
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                    <h2 class="font-semibold leading-tight text-gray-800 text-md dark:text-gray-200">
+                    <!-- Page Title -->
+                    <h2 class="text-sm font-semibold leading-tight text-gray-800 dark:text-gray-200">
                         Line: Show
                     </h2>
+                    <!-- Prev or Next Buttons -->
                     <div class="flex ml-4">
                         <div v-if="!prevItem">
                             <SquareChevronLeft
-                                :size="28"
+                                :size="24"
                                 :stroke-width="1"
                                 class="dark:text-white/75 opacity-20 dark:hover:text-white active:bg-yellow-900"
                             />
@@ -21,7 +23,7 @@
                             v-if="prevItem"
                         >
                         <SquareChevronLeft
-                            :size="28"
+                            :size="24"
                             :stroke-width="1"
                             class="dark:text-white/75 dark:hover:text-white active:bg-yellow-900"
                         />
@@ -31,14 +33,14 @@
                             v-if="props.nextLineExists"
                         >
                         <SquareChevronRight
-                            :size="28"
+                            :size="24"
                             :stroke-width="1"
                             class="dark:text-white/75 dark:hover:text-white active:bg-yellow-900"
                         />
                         </Link>
                         <div v-if="!props.nextLineExists">
                             <SquareChevronRight
-                                :size="28"
+                                :size="24"
                                 :stroke-width="1"
                                 class="dark:text-white/75 opacity-10 dark:hover:text-white active:bg-yellow-900"
                             />
@@ -46,33 +48,34 @@
                     </div>
 
                 </div>
+                <!-- Create Next or Edit or Back To List buttons -->
                 <div class="flex items-center justify-between">
                     <div
                         v-if="!props.nextLineExists"
-                        class="me-4"
+                        class="me-6"
                     >
                         <button
                             type="button"
                             @click="createNext()"
-                            class="inline-flex items-center px-4 py-2 text-xs font-medium text-white bg-teal-500 border border-transparent rounded-lg outline outline-teal-500 outline-2 outline-offset-2 gap-x-2 hover:bg-teal-600 focus:bg-teal-600 disabled:opacity-50 disabled:pointer-events-none"
+                            class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-teal-500 border border-transparent rounded-lg outline outline-teal-500 outline-1 outline-offset-1 gap-x-1 hover:bg-teal-600 focus:bg-teal-600 disabled:opacity-50 disabled:pointer-events-none"
                         >
                             <CirclePlus :size="16" />Create Next
                         </button>
                     </div>
 
-                    <div>
+                    <div class="inline-flex">
                         <Link
                             type="button"
                             :href="route('lines.edit', { line: line?.data.id })"
-                            class="inline-flex items-center px-4 py-2 mr-1 text-xs font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
+                            class="inline-flex items-center px-2 py-1 mr-1 text-xs font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                         >
-                        <Edit :size="16" />Edit
+                        <Edit :size="10" />Edit
                         </Link>
                         <button
                             type="button"
-                            class="inline-flex items-center px-4 py-2 text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                            class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
                         >
-                            <ArrowLeft :size="16" />back to List
+                            <ArrowLeft :size="14" />back to List
                         </button>
                     </div>
                 </div>
@@ -137,6 +140,22 @@
                                     class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-50 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-700 dark:border-neutral-800 dark:text-neutral-300 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                 >
                                     {{ props.line?.data.word.english }}</p>
+                            </div>
+                            <!-- End Col -->
+
+                            <div class="sm:col-span-3">
+                                <h2 class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500">
+                                    Part of Speech
+                                </h2>
+                            </div>
+                            <!-- End Col -->
+
+                            <div class="sm:col-span-9">
+                                <p
+                                    id="word-selected"
+                                    class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-50 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-700 dark:border-neutral-800 dark:text-neutral-300 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                >
+                                    {{ props.line?.data.word.part_of_speech }}</p>
                             </div>
                             <!-- End Col -->
                         </div>
@@ -246,7 +265,7 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { FlashMessage, Line } from '@/types/models';
+import { FlashMessage, Line, Word } from '@/types/models';
 import { computed, PropType } from 'vue';
 import ExampleDecode from '@/Components/ExampleDecode.vue';
 import SectionTitle from '@/Components/SectionTitle.vue';
@@ -279,7 +298,7 @@ const createNext = () => {
     let nextBookId = props.line?.data.book.id;
     let nextIndexNo = (props.line?.data.index_no || 0) + 1;
     // console.log(nextBookId, nextIndexNo);
-    return router.get(route('lines.recreate'), {
+    return router.get(route('lines.create'), {
         nextBookId: nextBookId,
         nextIndexNo: nextIndexNo,
     })

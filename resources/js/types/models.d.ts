@@ -11,6 +11,7 @@ export interface Book {
 export interface Word {
     id?: number;
     english: string;
+    part_of_speech: string;
 }
 
 export interface Line {
@@ -29,6 +30,7 @@ export interface Usage {
     line_id?: number;
     example: string;
     translation: string;
+    ordered_words?: string;
 }
 
 export interface linkObj {

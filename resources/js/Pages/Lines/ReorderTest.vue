@@ -1,11 +1,11 @@
 <template>
 
-    <Head title="Line: INDEX" />
+    <Head title="Line: ReOrder Test" />
 
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold leading-tight text-gray-800 text-md dark:text-gray-200">
-                Line: INDEX
+                Line: ReOrder Test
             </h2>
         </template>
 
@@ -43,22 +43,34 @@
                                             </option>
                                         </select>
                                     </div>
-                                    <div class="flex items-center">
+                                    <div class="flex items-center gap-x-2">
                                         <label
-                                            for="filter-word"
-                                            class="inline-block mr-2 text-sm font-medium text-gray-800 dark:text-neutral-200 text-nowrap"
+                                            for="indexNoFrom"
+                                            class="-mr-1 text-xs font-medium text-gray-800 dark:text-neutral-200"
+                                        >From: </label>
+                                        <select
+                                            id="indexNoFrom"
+                                            v-model="indexNoFrom"
+                                            class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm text-end pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                         >
-                                            Word :
-                                        </label>
-                                        <input
-                                            v-model="wordFilter"
-                                            id="filter-word"
-                                            type="text"
-                                            class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                            <option v-for="n in props.books.data[Number(bookId) - 1].max_index / 100">{{
+                                                n * 100 - 99 }}
+                                            </option>
+                                        </select>
+                                        <label
+                                            for="indexNoTo"
+                                            class="-mr-1 text-xs font-medium text-gray-800 dark:text-neutral-200"
+                                        >To:</label>
+                                        <select
+                                            id="indexNoTo"
+                                            v-model="indexNoTo"
+                                            class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                         >
+                                            <option v-for="n in props.books.data[Number(bookId) - 1].max_index / 100">{{
+                                                n * 100 }}
+                                            </option>
+                                        </select>
                                     </div>
-
-
                                 </div>
                                 <div class="overflow-hidden">
                                     <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
@@ -158,21 +170,45 @@ const props = defineProps({
 });
 
 let bookId = ref(usePage().props.book ?? "0"),
+    indexNoFrom = ref("1"),
+    indexNoTo = ref("100"),
     pageNumber = ref(1),
     wordFilter = ref(usePage().props.wordFilter ?? "");
+
+const validateIndexNoFrom = (value: string) => {
+    if (parseInt(value) > parseInt(indexNoTo.value)) {
+        indexNoTo.value = (parseInt(value) + 99).toString();
+    }
+};
+
+const validateIndexNoTo = (value: string) => {
+    if (parseInt(value) < parseInt(indexNoFrom.value)) {
+        indexNoFrom.value = (parseInt(value) - 99).toString();
+    }
+};
+
+watch(indexNoFrom, validateIndexNoFrom);
+watch(indexNoTo, validateIndexNoTo);
 
 const updatedPageNumber = (link: linkObj) => {
     pageNumber.value = parseInt(link.url.split("=")[1]);
 };
 
 let linesUrl = computed(() => {
-    let url = new URL(route('lines.index'));
+    let url = new URL(route('lines.reorderTest'));
     url.searchParams.append("page", pageNumber.value.toString());
     if (wordFilter.value) {
         url.searchParams.append("wordFilter", wordFilter.value.toString());
     }
     if (bookId.value) {
         url.searchParams.append("book", bookId.value.toString());
+    }
+    if (indexNoFrom.value) {
+        url.searchParams.append("from", indexNoFrom.value.toString());
+    }
+
+    if (indexNoTo.value) {
+        url.searchParams.append("to", indexNoTo.value.toString());
     }
     return url;
 });

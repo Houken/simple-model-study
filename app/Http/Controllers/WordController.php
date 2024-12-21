@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWordRequest;
 use App\Http\Requests\UpdateWordRequest;
+use App\Http\Resources\WordResource;
 use App\Models\Word;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,7 +16,10 @@ class WordController extends Controller
      */
     public function index()
     {
-        //
+        $words = WordResource::collection(Word::paginate(15));
+        return Inertia::render('Words/Index', [
+            'words' => $words,
+        ]);
     }
 
     /**
@@ -86,6 +90,15 @@ class WordController extends Controller
             'english' => $request->english,
             'part_of_speech' => $request->part_of_speech,
         ]);
+
+        $newWordId = $word->id;
+        $message = '新しい単語が保存されました。';
+
+        return redirect()->route('lines.create', [
+            'newWordId' => $newWordId,
+            'nextBookId' => $request->nextBookId,
+            'nextIndexNo' => $request->nextIndexNo,
+        ])->with('message', $message);
     }
 
     /**

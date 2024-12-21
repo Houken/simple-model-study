@@ -38,4 +38,13 @@ class Line extends Model
             return $query->where('book_id', $bookId);
         });
     }
+
+    public function scopeIndexNoFilter(Builder $query, Request $request)
+    {
+        $indexNoFrom = $request->from;
+        $indexNoTo = $request->to;
+        return $query->when($indexNoFrom, function ($query) use ($indexNoFrom, $indexNoTo) {
+            return $query->whereBetween('index_no', [$indexNoFrom, $indexNoTo]);
+        });
+    }
 }

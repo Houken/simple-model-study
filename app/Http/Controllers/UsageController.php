@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUsageRequest;
 use App\Http\Requests\UpdateUsageRequest;
 use App\Models\Usage;
+use Inertia\Inertia;
 
 class UsageController extends Controller
 {
@@ -38,6 +39,14 @@ class UsageController extends Controller
     public function show(Usage $usage)
     {
         //
+    }
+
+    public function showOrderTestList()
+    {
+        $usages = Usage::paginate(15);
+        return Inertia::render('Usages/OrderTest', [
+            'usages' => $usages,
+        ]);
     }
 
     /**

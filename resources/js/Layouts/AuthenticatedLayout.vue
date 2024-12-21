@@ -1,15 +1,3 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
-
-const showingNavigationDropdown = ref(false);
-</script>
-
 <template>
     <div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -33,6 +21,18 @@ const showingNavigationDropdown = ref(false);
                                     :active="route().current('dashboard')"
                                 >
                                     Dashboard
+                                </NavLink>
+                                <NavLink
+                                    :href="route('lines.index')"
+                                    :active="isActiveRoute('lines')"
+                                >
+                                    Lines
+                                </NavLink>
+                                <NavLink
+                                    :href="route('words.index')"
+                                    :active="isActiveRoute('words')"
+                                >
+                                    Words
                                 </NavLink>
                             </div>
                         </div>
@@ -176,7 +176,7 @@ const showingNavigationDropdown = ref(false);
                 class="bg-white shadow dark:bg-gray-800"
                 v-if="$slots.header"
             >
-                <div class="px-4 py-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="px-3 py-2 mx-auto max-w-7xl sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
@@ -188,3 +188,21 @@ const showingNavigationDropdown = ref(false);
         </div>
     </div>
 </template>
+<script setup lang="ts">
+import { ref } from 'vue';
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import Dropdown from '@/Components/Dropdown.vue';
+import DropdownLink from '@/Components/DropdownLink.vue';
+import NavLink from '@/Components/NavLink.vue';
+import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import { Link } from '@inertiajs/vue3';
+
+const showingNavigationDropdown = ref(false);
+
+// 現在のルートを判別
+const isActiveRoute = (routeName: string | any[]): boolean => {
+    const currentRouteName = route().current()?.split('.')[0];
+    console.log(currentRouteName);
+    return currentRouteName === routeName || (Array.isArray(routeName) && routeName.includes(currentRouteName));
+}
+</script>
