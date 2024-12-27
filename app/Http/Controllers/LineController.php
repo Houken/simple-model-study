@@ -53,12 +53,20 @@ class LineController extends Controller
         $linesQuery = Line::bookFilter($request)->indexNoFilter($request);
         $wordFilter = $request->wordFilter;
         $this->applyLineFilterByWord($linesQuery, $wordFilter);
-        $lines = LineResource::collection($linesQuery->paginate(15));
+        $allLines = $linesQuery->get();
+        $lines = $allLines->random(20);
+        // dd($lines);
         $books = BookResource::collection(Book::all());
+        $bookId = $request->book;
+        $indexNoFrom = $request->from;
+        $indexNoTo = $request->to;
 
         return Inertia::render('Lines/ReorderTest', [
             'lines' => $lines,
             'books' => $books,
+            'bookId' => $bookId,
+            'indexNoFrom' => $indexNoFrom,
+            'indexNoTo' => $indexNoTo,
         ]);
     }
 
@@ -187,9 +195,18 @@ class LineController extends Controller
     public function edit(Line $line)
     {
         $line = new LineResource(Line::findOrFail($line->id));
+
+        $bookId = $line->book_id;
+        $nextIndex = $line->index_no + 1;
+        $nextLineExists = Line::where('book_id', $bookId)->where('index_no', $nextIndex)->exists();
+
         $books = BookResource::collection(Book::all());
 
-        return Inertia::render('Lines/Edit', ['line' => $line, 'books' => $books,]);
+        return Inertia::render('Lines/Edit', [
+            'line' => $line,
+            'books' => $books,
+            'nextLineExists' => $nextLineExists
+        ]);
     }
 
     /**

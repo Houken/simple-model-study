@@ -9,7 +9,7 @@
             </h2>
         </template>
 
-        <div class="py-4">
+        <div class="py-4 print:hidden">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                     <div class="flex flex-col">
@@ -80,70 +80,158 @@
                                                     scope="col"
                                                     class="w-[4rem] px-6 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
                                                 >
-                                                    id</th>
+                                                    index</th>
                                                 <th
                                                     scope="col"
                                                     class="w-[16rem] px-6 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
                                                 >
-                                                    book</th>
+                                                    usage</th>
                                                 <th
                                                     scope="col"
                                                     class="w-[4rem] px-6 py-2 text-xs font-medium text-gray-500 uppercase text-center dark:text-neutral-500"
                                                 >
-                                                    index_no</th>
-                                                <th
-                                                    scope="col"
-                                                    class="w-[16rem] px-6 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
-                                                >
-                                                    word</th>
-                                                <th
-                                                    scope="col"
-                                                    class="px-6 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
-                                                >
-                                                    definition</th>
+                                                    translation</th>
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
                                             <tr
-                                                v-for="line in lines.data"
-                                                :key="line.id"
-                                                class="hover:bg-gray-100 dark:hover:bg-neutral-700"
+                                                v-for="(line, index) in props.lines"
+                                                :key="index"
+                                                class="font-normal hover:bg-gray-100 dark:hover:bg-neutral-700"
                                             >
                                                 <td
-                                                    class="relative px-6 py-2 text-sm font-medium text-center text-gray-800 whitespace-nowrap dark:text-neutral-200 hover:bg-slate-200">
-                                                    <Link
-                                                        :href="route('lines.show', { line: line.id })"
-                                                        class="absolute inset-0 pt-2"
-                                                    >{{ line.id }}
-                                                    </Link>
+                                                    class="relative px-6 py-2 text-sm text-center text-gray-800 whitespace-nowrap dark:text-neutral-200 hover:bg-slate-200">
+                                                    {{ index + 1 }}
                                                 </td>
                                                 <td
-                                                    class="px-6 py-2 text-sm text-gray-800 whitespace-nowrap dark:text-neutral-200">
-                                                    <TitleAndVersion :book="line.book" />
+                                                    class="px-6 py-2 text-xs text-gray-800 whitespace-nowrap dark:text-neutral-200">
+                                                    {{ line.usages[0].ordered_words }}
                                                 </td>
                                                 <td
-                                                    class="px-6 py-2 text-sm text-center text-gray-800 whitespace-nowrap dark:text-neutral-200">
-                                                    {{ line.index_no }}</td>
-                                                <td
-                                                    class="px-6 py-2 text-sm text-gray-800 whitespace-nowrap dark:text-neutral-200">
-                                                    <PosAndWord :word="line.word" />
+                                                    class="px-6 py-2 text-xs text-gray-800 text-start whitespace-nowrap dark:text-neutral-200">
+                                                    <ExampleDecode :text="line.usages[0].translation" />
                                                 </td>
-                                                <td
-                                                    class="px-6 py-2 text-sm font-medium whitespace-nowrap text-start dark:text-neutral-200">
-                                                    {{ line.definition }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <Pagination
-                                    :data="lines"
-                                    :updated-page-number="updatedPageNumber"
-                                />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <!-- for print Questions -->
+        <div
+            id="for-print-questions"
+            class="hidden bg-white print:block w-a4 h-a4"
+        >
+            <div class="font-medium text-center">
+                <h1 class="flex items-center justify-center gap-x-2">語順整序テスト<span class="text-xs">( {{
+                    props.books.data[Number(bookId - 1)].title
+                        }}</span><span class="text-xs">from
+                        {{
+                            indexNoFrom }}
+                        to {{
+                            indexNoTo
+                        }} )</span></h1>
+            </div>
+
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+                <thead>
+                    <tr>
+                        <th
+                            scope="col"
+                            class="w-[1rem] px-4 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
+                        >
+                            No.</th>
+                        <th
+                            scope="col"
+                            class="w-[16rem] px-4 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
+                        >
+                            Question</th>
+                        <th
+                            scope="col"
+                            class="w-auto px-4 py-2 text-xs font-medium text-center text-gray-500 uppercase dark:text-neutral-500"
+                        >
+                            Your Answer</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                    <tr
+                        v-for="(line, index) in props.lines"
+                        :key="index"
+                        class="font-normal hover:bg-gray-100 dark:hover:bg-neutral-700"
+                    >
+                        <td
+                            class="relative px-4 py-2 text-sm text-center text-gray-800 whitespace-nowrap dark:text-neutral-200 hover:bg-slate-200">
+                            {{ index + 1 }}
+                        </td>
+                        <td class="px-4 py-2 text-xs text-gray-800 text-start whitespace-nowrap dark:text-neutral-200">
+                            <div class="flex flex-col"><span>
+                                    <ExampleDecode :text="line.usages[0].translation" />
+                                </span><span>{{
+                                    line.usages[0].ordered_words }}</span></div>
+                        </td>
+                        <td class="px-4 py-2 text-xs text-gray-800 whitespace-nowrap dark:text-neutral-200">
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- for print Answers -->
+        <div
+            id="for-print-answers"
+            class="hidden bg-white break-before-page print:block w-a4 h-a4"
+        >
+            <div class="font-medium text-center">
+                <h1 class="flex items-center justify-center gap-x-2">語順整序テスト<span class="text-xs">( {{
+                    props.books.data[Number(bookId - 1)].title
+                        }}</span><span class="text-xs">from
+                        {{
+                            indexNoFrom }}
+                        to {{
+                            indexNoTo
+                        }} 正解)</span></h1>
+            </div>
+
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
+                <thead>
+                    <tr>
+                        <th
+                            scope="col"
+                            class="w-[1rem] px-4 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
+                        >
+                            No.</th>
+                        <th
+                            scope="col"
+                            class="w-[16rem] px-4 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
+                        >
+                            Answer</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                    <tr
+                        v-for="(line, index) in props.lines"
+                        :key="index"
+                        class="font-normal hover:bg-gray-100 dark:hover:bg-neutral-700"
+                    >
+                        <td
+                            class="relative px-4 py-3 text-center text-gray-800 text-md whitespace-nowrap dark:text-neutral-200 hover:bg-slate-200">
+                            {{ index + 1 }}
+                        </td>
+                        <td class="px-4 py-3 text-sm text-gray-800 text-start whitespace-nowrap dark:text-neutral-200">
+                            <div class="flex flex-col"><span>
+                                    <ExampleDecode :text="line.usages[0].example" />
+                                </span></div>
+                        </td>
+                        <td class="px-4 py-2 text-xs text-gray-800 whitespace-nowrap dark:text-neutral-200">
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </AuthenticatedLayout>
 </template>
@@ -157,33 +245,45 @@ import Pagination from '@/Components/Pagination.vue';
 import { BookDownIcon } from 'lucide-vue-next';
 import PosAndWord from '@/Components/PosAndWord.vue';
 import TitleAndVersion from '@/Components/TitleAndVersion.vue';
+import ExampleDecode from '@/Components/ExampleDecode.vue';
 
 const props = defineProps({
     lines: {
-        type: Object as PropType<{ data: Line[] }>,
-        default: () => ({ data: [] }),
+        type: Object,
     },
     books: {
         type: Object as PropType<{ data: Book[] }>,
         default: () => ({ data: [] }),
     },
+    bookId: {
+        type: Number,
+        default: 1,
+    },
+    indexNoFrom: {
+        type: Number,
+        default: 1,
+    },
+    indexNoTo: {
+        type: Number,
+        default: 100,
+    },
 });
 
-let bookId = ref(usePage().props.book ?? "0"),
-    indexNoFrom = ref("1"),
-    indexNoTo = ref("100"),
+let bookId = ref(props.bookId ?? "1"),
+    indexNoFrom = ref(props.indexNoFrom),
+    indexNoTo = ref(props.indexNoTo),
     pageNumber = ref(1),
     wordFilter = ref(usePage().props.wordFilter ?? "");
 
-const validateIndexNoFrom = (value: string) => {
-    if (parseInt(value) > parseInt(indexNoTo.value)) {
-        indexNoTo.value = (parseInt(value) + 99).toString();
+const validateIndexNoFrom = (value: number): void => {
+    if (value > indexNoTo.value) {
+        indexNoTo.value = value + 99;
     }
 };
 
-const validateIndexNoTo = (value: string) => {
-    if (parseInt(value) < parseInt(indexNoFrom.value)) {
-        indexNoFrom.value = (parseInt(value) - 99).toString();
+const validateIndexNoTo = (value: number): void => {
+    if (value < indexNoFrom.value) {
+        indexNoFrom.value = value - 99;
     }
 };
 
@@ -196,7 +296,6 @@ const updatedPageNumber = (link: linkObj) => {
 
 let linesUrl = computed(() => {
     let url = new URL(route('lines.reorderTest'));
-    url.searchParams.append("page", pageNumber.value.toString());
     if (wordFilter.value) {
         url.searchParams.append("wordFilter", wordFilter.value.toString());
     }

@@ -14,6 +14,8 @@ export function insertAtCursor(element: HTMLInputElement, text: string): void {
 export function insertSpecialChar(elementId: string, char: string): void {
     const element = document.getElementById(elementId) as HTMLInputElement;
     insertAtCursor(element, char);
+    // v-model doesn't update the value immediately
+    element.dispatchEvent(new Event('input'));
 }
 
 export function insertTextAtCursor(
@@ -39,6 +41,7 @@ export function encloseSentencesInQuotes(elementId: string, quote: string) {
             textBefore + quote + textSelected + quote + textAfter;
 
         element.value = quotedText;
+        element.dispatchEvent(new Event('input'));
 
         element.focus();
         element.setSelectionRange(selectionEnd + 1, selectionEnd + 1);

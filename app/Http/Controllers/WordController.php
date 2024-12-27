@@ -92,6 +92,7 @@ class WordController extends Controller
         ]);
 
         $newWordId = $word->id;
+        // dd($newWordId); // この時点で新しい単語のIDは取得できている
         $message = '新しい単語が保存されました。';
 
         return redirect()->route('lines.create', [

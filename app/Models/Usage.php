@@ -24,7 +24,7 @@ class Usage extends Model
         // 対象のインスタンスからexampleを取得
         $example = $this->example;
         // 生成に不要な文字、空白を取り除き、全体を小文字にする
-        $trimmedExample = strtolower(trim(str_replace([',', '.', '?', '!', '`'], '', $example)));
+        $trimmedExample = strtolower(trim(str_replace([',', '.', '?', '!', '`', ';', '—'], '', $example)));
         // アスタリスクで囲まれた部分とそうでない部分に分割
         preg_match_all('/\*.*?\*|[^*]+/', $trimmedExample, $matches);
         // アスタリスクを取り除き、マークをつけるコールバック関数
@@ -42,6 +42,10 @@ class Usage extends Model
         $question = [];
         foreach ($splitted as $value) {
             $words = explode(' ', $value['phrase']);
+            // 分割した単語がiと一致する場合は、大文字のIと置換する。
+            $words = array_map(function ($word) {
+                return $word === 'i' ? 'I' : $word;
+            }, $words);
             if ($value['asterisked']) {
                 foreach ($words as $word) {
                     $question[] = $word[0] . preg_replace('/\w/', ' _', substr($word, 1));

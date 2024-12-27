@@ -11,9 +11,9 @@
 
         <div class="py-4">
             <!-- Card Section -->
-            <div class="max-w-4xl px-4 py-8 mx-auto lg:px-8">
+            <div class="max-w-4xl px-4 py-4 mx-auto lg:px-8">
                 <!-- Card -->
-                <div class="p-4 bg-white shadow rounded-xl sm:p-7 dark:bg-neutral-900">
+                <div class="p-4 bg-white shadow rounded-xl dark:bg-neutral-900">
                     <form @submit.prevent="form.post(route('lines.store'))">
                         <!-- Book info Section -->
                         <div
@@ -64,7 +64,7 @@
 
                         <!-- Word Section -->
                         <div
-                            class="grid gap-2 py-8 border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
+                            class="grid gap-2 py-4 border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <!-- Word Section Title Column -->
                             <div class="sm:col-span-12">
                                 <SectionTitle title="Word">
@@ -79,7 +79,7 @@
                             </div>
                             <!-- End Word Section Title Col -->
 
-                            <!-- New Word Label Column -->
+                            <!-- Create New Word Section -->
                             <transition
                                 enter-active-class="duration-1000 ease-out"
                                 enter-class="scale-y-0 -translate-y-full opacity-0"
@@ -90,8 +90,9 @@
                             >
                                 <div
                                     v-show="creatingNewWord"
-                                    class="grid grid-cols-12 gap-2 py-4 -mt-4 shadow-inner shadow-slate-400 dark:shadow-slate-900 -mx-7 px-7 sm:col-span-12 bg-slate-300 dark:bg-slate-800"
+                                    class="grid grid-cols-12 gap-2 py-4 -mx-4 -mt-4 shadow-inner shadow-slate-400 dark:shadow-slate-900 px-7 sm:col-span-12 bg-slate-300 dark:bg-slate-800"
                                 >
+                                    <!-- New Word Label Column -->
                                     <div class="sm:col-span-3">
                                         <label
                                             for="word-new-english"
@@ -100,7 +101,7 @@
                                             New Word
                                         </label>
                                     </div>
-                                    <!-- End New Word Col -->
+                                    <!-- End New Word Label Col -->
 
                                     <!-- New Word Input Column -->
                                     <div class="sm:col-span-6">
@@ -349,7 +350,6 @@
                                 <!-- Usages Example 1 Input Column -->
                                 <div class="sm:col-span-7">
                                     <input
-                                        @blur="updateBoundProp(index, 'example', $event)"
                                         v-model="usage.example"
                                         :id="'usage-example-' + (index + 1)"
                                         type="text"
@@ -387,7 +387,6 @@
                                 <!-- Usages Translation 1 Inout Column -->
                                 <div class="sm:col-span-7">
                                     <input
-                                        @blur="updateBoundProp(index, 'translation', $event)"
                                         v-model="usage.translation"
                                         :id="'usage-translation-' + (index + 1)"
                                         type="text"
@@ -395,7 +394,6 @@
                                     >
                                 </div>
                                 <!-- End Usages Translation 1 Inout Col -->
-
 
                                 <!-- Usages Example 1 Quotes Column -->
                                 <div class="inline-flex sm:col-span-2 gap-x-2">
@@ -432,7 +430,7 @@
 
                         <!-- Store Line Section -->
                         <div
-                            class="flex justify-end p-4 rounded-b-lg sm:col-span-12 -m-7 gap-x-2 dark:bg-slate-800 bg-slate-200">
+                            class="flex justify-end p-4 -m-4 rounded-b-lg sm:col-span-12 gap-x-2 dark:bg-slate-800 bg-slate-200">
                             <button
                                 @click="backToPrevious"
                                 type="button"
@@ -491,7 +489,10 @@ const props = defineProps({
     },
     previousRouteAndParams: {
         type: Object,
-    }
+    },
+    newWordId: {
+        type: Number,
+    },
 });
 
 // --- usagesの準備
@@ -502,7 +503,7 @@ const props = defineProps({
 // --- Form
 const form = useForm({
     book_id: props.nextBookId,
-    word_id: 0,
+    word_id: props.newWordId || 0,
     index_no: props.nextIndexNo,
     definition: '',
     usages: [] as Usage[],
@@ -542,7 +543,7 @@ const storeNewWord = async () => {
         nextIndexNo: props.nextIndexNo,
     };
 
-    const response = router.put(route('word.storeFromLine'), dataToStore);
+    router.put(route('word.storeFromLine'), dataToStore);
 
     creatingNewWord.value = false;
     newEnglish.value = '';
@@ -624,17 +625,6 @@ const handleUsage = () => {
         document.getElementById(lastExampleId)?.focus();
     });
 };
-// --- バンドル値の更新
-const updateBoundProp = (index: number, key: keyof Usage, event: Event) => {
-    const usage = form.usages[index];
-    if (event.target instanceof HTMLInputElement) {
-        if (index >= 0 && index < form.usages.length && form.usages[index] && (key in form.usages[index])) {
-            if (key === 'example') { usage['example'] = event.target.value } else if (key === 'translation') { usage['translation'] = event.target.value }
-        } else {
-            console.error("Invalid index:", index);
-        }
-    }
-}
 
 // Cancelボタンの処理
 const backToPrevious = () => {

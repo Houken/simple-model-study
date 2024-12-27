@@ -89,13 +89,13 @@
                 <p class="p-2 bg-blue-100">{{ $page.props.flash.message }}</p>
             </div> -->
             <!-- Card Section -->
-            <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-4">
+            <div class="max-w-4xl px-4 py-4 mx-auto lg:py-4">
                 <!-- Card -->
-                <div class="p-4 bg-white shadow rounded-xl sm:p-7 dark:bg-slate-800">
+                <div class="p-4 bg-white shadow rounded-xl dark:bg-slate-800">
                     <div>
                         <!-- Section -->
                         <div
-                            class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
+                            class="grid gap-2 py-4 border-t-0 border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <SectionTitle
                                 title="Book info."
                                 class="rounded-t-lg"
@@ -123,7 +123,7 @@
 
                         <!-- Section -->
                         <div
-                            class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
+                            class="grid gap-2 py-4 border-t-0 border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <SectionTitle title="Word info." />
                             <!-- End Col -->
 
@@ -163,7 +163,7 @@
 
                         <!-- Section -->
                         <div
-                            class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
+                            class="grid gap-2 py-4 border-t-0 border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <SectionTitle title="Line info." />
                             <!-- End Col -->
 
@@ -210,7 +210,7 @@
 
                         <!-- Section -->
                         <div
-                            class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
+                            class="grid gap-2 py-8 border-t-0 border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <SectionTitle title="Usages" />
                             <!-- End Col -->
 

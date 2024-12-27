@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center justify-between py-2 -mt-8 -mx-7 sm:col-span-12 bg-slate-200 dark:bg-slate-600">
+    <div class="flex items-center justify-between py-2 -mx-4 -mt-4 sm:col-span-12 bg-slate-200 dark:bg-slate-600">
         <div class="pl-4">
             <h2 class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
                 {{ title }}
