@@ -50,6 +50,7 @@ class LineController extends Controller
 
     public function reorderTest(Request $request)
     {
+        // dd($request);
         $linesQuery = Line::bookFilter($request)->indexNoFilter($request);
         $wordFilter = $request->wordFilter;
         $this->applyLineFilterByWord($linesQuery, $wordFilter);
@@ -64,9 +65,9 @@ class LineController extends Controller
         return Inertia::render('Lines/ReorderTest', [
             'lines' => $lines,
             'books' => $books,
-            'bookId' => $bookId,
-            'indexNoFrom' => $indexNoFrom,
-            'indexNoTo' => $indexNoTo,
+            'bookId' => intval($bookId),
+            'indexNoFrom' => intval($indexNoFrom),
+            'indexNoTo' => intval($indexNoTo),
         ]);
     }
 

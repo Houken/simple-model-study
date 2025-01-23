@@ -4,13 +4,13 @@
             <nav class="bg-white border-b border-gray-100 dark:border-gray-700 dark:bg-gray-800 print:hidden">
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 mx-auto max-w-7xl sm:px-4 lg:px-8">
-                    <div class="flex justify-between h-16">
+                    <div class="flex justify-between h-12">
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex items-center shrink-0">
                                 <Link :href="route('dashboard')">
                                 <ApplicationLogo
-                                    class="block w-auto text-gray-800 fill-current h-9 dark:text-gray-200" />
+                                    class="block w-auto h-8 text-gray-800 fill-current dark:text-gray-200" />
                                 </Link>
                             </div>
 
@@ -202,7 +202,7 @@ const showingNavigationDropdown = ref(false);
 // 現在のルートを判別
 const isActiveRoute = (routeName: string | any[]): boolean => {
     const currentRouteName = route().current()?.split('.')[0];
-    console.log(currentRouteName);
+    // console.log(currentRouteName);
     return currentRouteName === routeName || (Array.isArray(routeName) && routeName.includes(currentRouteName));
 }
 </script>

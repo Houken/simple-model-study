@@ -4,16 +4,16 @@
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+            <h2 class="text-sm font-semibold leading-tight text-gray-800 dark:text-gray-200">
                 Line: Create
             </h2>
         </template>
 
-        <div class="py-4">
+        <div class="py-3">
             <!-- Card Section -->
-            <div class="max-w-4xl px-4 py-4 mx-auto lg:px-8">
+            <div class="max-w-4xl px-4 py-3 mx-auto lg:px-8">
                 <!-- Card -->
-                <div class="p-4 bg-white shadow rounded-xl dark:bg-neutral-900">
+                <div class="px-4 py-3 bg-white shadow rounded-xl dark:bg-neutral-900">
                     <form @submit.prevent="form.post(route('lines.store'))">
                         <!-- Book info Section -->
                         <div
@@ -41,6 +41,7 @@
                             <!-- Book info Select Column -->
                             <div class="sm:col-span-9">
                                 <select
+                                    tabindex="0"
                                     v-model="form.book_id"
                                     placeholder="単語集を選択"
                                     id="book-select"
@@ -106,6 +107,7 @@
                                     <!-- New Word Input Column -->
                                     <div class="sm:col-span-6">
                                         <input
+                                            tabindex="1"
                                             v-model="newEnglish"
                                             id="word-new-english"
                                             type="text"
@@ -146,6 +148,7 @@
                                     <!-- New Word POS Input Column -->
                                     <div class="sm:col-span-9">
                                         <input
+                                            tabindex="2"
                                             v-model="newPartOfSpeech"
                                             list="part_of_speech_list"
                                             id="word-part-of-speech"
@@ -169,6 +172,7 @@
                                         </button>
                                         <button
                                             @click="storeNewWord"
+                                            tabindex="3"
                                             type="button"
                                             class="inline-flex items-center px-3 py-2 text-xs font-medium text-red-800 bg-red-100 border border-transparent rounded-lg gap-x-2 hover:bg-red-200 focus:outline-none focus:bg-red-200 disabled:opacity-50 disabled:pointer-events-none dark:text-red-500 dark:bg-red-800/30 dark:hover:bg-red-800/20 dark:focus:bg-red-800/20"
                                         >
@@ -209,6 +213,7 @@
                             <!-- Word Filter Word Column -->
                             <div class="sm:col-span-9 sm:col-start-4">
                                 <input
+                                    tabindex="4"
                                     v-model="wordFilter"
                                     id="word-filter"
                                     type="text"
@@ -230,6 +235,7 @@
                                             <div
                                                 class="overflow-hidden border rounded-lg shadow dark:border-neutral-700 dark:shadow-gray-900">
                                                 <table
+                                                    id="word-picker-table"
                                                     class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700"
                                                 >
                                                     <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
@@ -312,6 +318,7 @@
                             <!-- Line Definition Input Column -->
                             <div class="sm:col-span-9">
                                 <input
+                                    tabindex="5"
                                     v-model="form.definition"
                                     id="line-definition"
                                     type="text"
@@ -350,6 +357,7 @@
                                 <!-- Usages Example 1 Input Column -->
                                 <div class="sm:col-span-7">
                                     <input
+                                        :tabindex="(6 + index * 2)"
                                         v-model="usage.example"
                                         :id="'usage-example-' + (index + 1)"
                                         type="text"
@@ -387,6 +395,7 @@
                                 <!-- Usages Translation 1 Inout Column -->
                                 <div class="sm:col-span-7">
                                     <input
+                                        :tabindex="7 + index * 2"
                                         v-model="usage.translation"
                                         :id="'usage-translation-' + (index + 1)"
                                         type="text"
@@ -414,6 +423,7 @@
                             <!-- Usages Add Usage Column -->
                             <div class="pb-2 sm:col-start-4 sm:col-span-8">
                                 <button
+                                    tabindex="16"
                                     @click="handleUsage"
                                     :disabled="!isValidUsage"
                                     type="button"
@@ -493,6 +503,9 @@ const props = defineProps({
     newWordId: {
         type: Number,
     },
+    newWordEnglish: {
+        type: String,
+    },
 });
 
 // --- usagesの準備
@@ -541,9 +554,12 @@ const storeNewWord = async () => {
         part_of_speech: newPartOfSpeech.value,
         nextBookId: props.nextBookId,
         nextIndexNo: props.nextIndexNo,
+        ...form.data,
     };
 
-    router.put(route('word.storeFromLine'), dataToStore);
+    // console.log(dataToStore);
+
+    router.put(route('words.storeFromLine'), dataToStore);
 
     creatingNewWord.value = false;
     newEnglish.value = '';
@@ -557,8 +573,10 @@ const storeNewWord = async () => {
 let wordFilter = ref('');
 
 // --- --- Word Pickerの表示/非表示
+// --- --- --- 初期値は非表示
 let showWordPicker = ref(false);
 
+// --- --- wordFilterに有効な値がある場合wordPickerを表示
 watch(() => wordFilter.value, (newValue) => {
     if (newValue && newValue.trim() !== '') {
         showWordPicker.value = true;
@@ -567,13 +585,22 @@ watch(() => wordFilter.value, (newValue) => {
     }
 });
 
+watch(() => props.newWordId, (newId) => {
+    if (newId) {
+        form.word_id = newId;
+    }
+});
+
 watch(() => form.word_id, (newValue) => {
     if (newValue > 0) {
+        dispatchEvent(new Event('input'));
         showWordPicker.value = false;
     }
 });
 
 // --- --- wordsの絞り込み処理
+// --- --- --- wordsUrlの初期値はlines.create
+// --- --- --- wordFilterに値がある場合、wordsUrlにwordFilterバラメータを追加
 let wordsUrl = computed(() => {
     let url = new URL(route('lines.create'));
     if (wordFilter.value) {
@@ -601,9 +628,11 @@ const selectThisWord = (id: number | undefined) => {
 }
 
 let selectedWord = computed(() => {
-    if (form.word_id > 0) {
+    if (form.word_id > 0 && props.words.length > 0) {
         let theEnglish = props.words.find(word => word.id === form.word_id)?.english;
         return theEnglish;
+    } else if (props.newWordEnglish !== '') {
+        return props.newWordEnglish;
     }
 })
 

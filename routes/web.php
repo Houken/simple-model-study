@@ -24,13 +24,13 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/lines/reorder-test', [LineController::class, 'reorderTest'])->name('lines.reorderTest');
-    Route::get('/lines/create', [LineController::class, 'create'])->name('lines.create');
-    Route::resource('/lines', LineController::class)->except(['create']);
+    // Route::get('/lines/create', [LineController::class, 'create'])->name('lines.create');
+    Route::resource('/lines', LineController::class);
     // Route::get('/words/create', function () {
     //     session(['redirect_to' => url()->previous()]);
     //     return app(WordController::class)->create();
     // })->name('words.create');
-    Route::put('/word/store-from-line', [WordController::class, 'storeFromCreateLine'])->name('word.storeFromLine');
+    Route::put('/words/store-from-line', [WordController::class, 'storeFromCreateLine'])->name('words.storeFromLine');
     Route::resource('/words', WordController::class);
     // ->except(['create']);
     Route::resource('/books', BookController::class)->except(['create']);

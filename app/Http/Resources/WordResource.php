@@ -14,6 +14,11 @@ class WordResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'english' => $this->english,
+            'part_of_speech' => $this->part_of_speech,
+            'lines' => LineResource::make($this->whenLoaded('lines')),
+        ];
     }
 }

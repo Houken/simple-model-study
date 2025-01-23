@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWordRequest;
 use App\Http\Requests\UpdateWordRequest;
+use App\Http\Resources\BookResource;
 use App\Http\Resources\WordResource;
+use App\Models\Book;
+use App\Models\Line;
 use App\Models\Word;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -92,13 +95,18 @@ class WordController extends Controller
         ]);
 
         $newWordId = $word->id;
-        // dd($newWordId); // この時点で新しい単語のIDは取得できている
+        $newWordEnglish = $word->english;
+
+        $books = Book::all();
+
         $message = '新しい単語が保存されました。';
 
-        return redirect()->route('lines.create', [
+        return Inertia::render('Lines/Create', [
             'newWordId' => $newWordId,
+            'newWordEnglish' => $newWordEnglish,
             'nextBookId' => $request->nextBookId,
             'nextIndexNo' => $request->nextIndexNo,
+            'books' => $books,
         ])->with('message', $message);
     }
 
@@ -107,7 +115,14 @@ class WordController extends Controller
      */
     public function show(Word $word)
     {
-        //
+        $lines = Line::whereBelongsTo($word)->get();
+        $books = Book::all();
+        // dd($books);
+        return Inertia::render('Words/Show', [
+            'word' => $word,
+            'lines' => $lines,
+            'books' => $books,
+        ]);
     }
 
     /**
@@ -115,7 +130,9 @@ class WordController extends Controller
      */
     public function edit(Word $word)
     {
-        //
+        return Inertia::render('Words/Edit', [
+            'word' => $word,
+        ]);
     }
 
     /**
@@ -123,7 +140,8 @@ class WordController extends Controller
      */
     public function update(UpdateWordRequest $request, Word $word)
     {
-        //
+        $word->update($request->validated());
+        return redirect()->route('words.show', ['word' => $word]);
     }
 
     /**

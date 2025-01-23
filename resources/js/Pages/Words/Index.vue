@@ -41,6 +41,11 @@
                                                     class="w-auto px-6 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
                                                 >
                                                     pos</th>
+                                                <th
+                                                    scope="col"
+                                                    class="w-8 px-6 py-2 text-xs font-medium text-gray-500 uppercase text-start dark:text-neutral-500"
+                                                >
+                                                    btn</th>
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
@@ -63,6 +68,16 @@
                                                 <td
                                                     class="px-6 py-2 text-sm font-medium whitespace-nowrap text-start dark:text-neutral-200">
                                                     {{ word.part_of_speech }}</td>
+                                                <td class="size-px whitespace-nowrap">
+                                                    <div class="px-6 py-1.5">
+                                                        <a
+                                                            class="inline-flex items-center text-sm font-medium text-blue-600 gap-x-1 decoration-2 hover:underline focus:outline-none focus:underline dark:text-blue-500"
+                                                            :href="route('words.edit', { word: word.id })"
+                                                        >
+                                                            Edit
+                                                        </a>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>

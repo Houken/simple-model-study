@@ -53,9 +53,20 @@
                                             v-model="indexNoFrom"
                                             class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm text-end pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                         >
-                                            <option v-for="n in props.books.data[Number(bookId) - 1].max_index / 100">{{
+                                            <option value=1>1</option>
+                                            <option value=101>101</option>
+                                            <option value=201>201</option>
+                                            <option value=301>301</option>
+                                            <option value=401>401</option>
+                                            <option value=501>501</option>
+                                            <option value=601>601</option>
+                                            <option value=701>701</option>
+                                            <option value=801>801</option>
+                                            <option value=901>901</option>
+                                            <option value=1001>1001</option>
+                                            <!-- <option v-for="n in props.books.data[bookId - 1].max_index / 100">{{
                                                 n * 100 - 99 }}
-                                            </option>
+                                            </option> -->
                                         </select>
                                         <label
                                             for="indexNoTo"
@@ -66,9 +77,19 @@
                                             v-model="indexNoTo"
                                             class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                         >
-                                            <option v-for="n in props.books.data[Number(bookId) - 1].max_index / 100">{{
+                                            <option value=100>100</option>
+                                            <option value=200>200</option>
+                                            <option value=300>300</option>
+                                            <option value=400>400</option>
+                                            <option value=500>500</option>
+                                            <option value=600>600</option>
+                                            <option value=700>700</option>
+                                            <option value=800>800</option>
+                                            <option value=900>900</option>
+                                            <option value=1000>1000</option>
+                                            <!-- <option v-for="n in props.books.data[bookId - 1].max_index / 100">{{
                                                 n * 100 }}
-                                            </option>
+                                            </option> -->
                                         </select>
                                     </div>
                                 </div>
@@ -128,7 +149,7 @@
         >
             <div class="font-medium text-center">
                 <h1 class="flex items-center justify-center gap-x-2">語順整序テスト<span class="text-xs">( {{
-                    props.books.data[Number(bookId - 1)].title
+                    props.books.data[0].title
                         }}</span><span class="text-xs">from
                         {{
                             indexNoFrom }}
@@ -187,7 +208,7 @@
         >
             <div class="font-medium text-center">
                 <h1 class="flex items-center justify-center gap-x-2">語順整序テスト<span class="text-xs">( {{
-                    props.books.data[Number(bookId - 1)].title
+                    props.books.data[0].title
                         }}</span><span class="text-xs">from
                         {{
                             indexNoFrom }}
@@ -241,10 +262,6 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, InertiaForm, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { computed, PropType, ref, watch } from 'vue';
 import { Book, Word, Usage, Line, linkObj } from '@/types/models';
-import Pagination from '@/Components/Pagination.vue';
-import { BookDownIcon } from 'lucide-vue-next';
-import PosAndWord from '@/Components/PosAndWord.vue';
-import TitleAndVersion from '@/Components/TitleAndVersion.vue';
 import ExampleDecode from '@/Components/ExampleDecode.vue';
 
 const props = defineProps({
@@ -269,11 +286,9 @@ const props = defineProps({
     },
 });
 
-let bookId = ref(props.bookId ?? "1"),
+let bookId = ref(props.bookId ?? 1),
     indexNoFrom = ref(props.indexNoFrom),
-    indexNoTo = ref(props.indexNoTo),
-    pageNumber = ref(1),
-    wordFilter = ref(usePage().props.wordFilter ?? "");
+    indexNoTo = ref(props.indexNoTo);
 
 const validateIndexNoFrom = (value: number): void => {
     if (value > indexNoTo.value) {
@@ -290,15 +305,9 @@ const validateIndexNoTo = (value: number): void => {
 watch(indexNoFrom, validateIndexNoFrom);
 watch(indexNoTo, validateIndexNoTo);
 
-const updatedPageNumber = (link: linkObj) => {
-    pageNumber.value = parseInt(link.url.split("=")[1]);
-};
-
 let linesUrl = computed(() => {
     let url = new URL(route('lines.reorderTest'));
-    if (wordFilter.value) {
-        url.searchParams.append("wordFilter", wordFilter.value.toString());
-    }
+
     if (bookId.value) {
         url.searchParams.append("book", bookId.value.toString());
     }
@@ -319,13 +328,4 @@ watch(() => linesUrl.value, (updatedLinesUrl) => {
         replace: true,
     });
 });
-
-watch(
-    () => wordFilter.value,
-    (value) => {
-        if (value) {
-            pageNumber.value = 1;
-        }
-    }
-);
 </script>
