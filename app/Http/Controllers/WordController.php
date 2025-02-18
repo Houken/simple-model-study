@@ -94,6 +94,7 @@ class WordController extends Controller
             'part_of_speech' => $request->part_of_speech,
         ]);
 
+        $newWord = $word;
         $newWordId = $word->id;
         $newWordEnglish = $word->english;
 
@@ -102,6 +103,7 @@ class WordController extends Controller
         $message = '新しい単語が保存されました。';
 
         return Inertia::render('Lines/Create', [
+            'newWord' => $newWord,
             'newWordId' => $newWordId,
             'newWordEnglish' => $newWordEnglish,
             'nextBookId' => $request->nextBookId,

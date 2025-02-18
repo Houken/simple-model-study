@@ -196,11 +196,19 @@
 
                             <!-- Word Selected Word Column -->
                             <div class="sm:col-span-9">
-                                <p
-                                    id="word-selected-english"
-                                    class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-50 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                >
-                                    {{ selectedWord ?? "単語を選択" }}</p>
+                                <div class="flex flex-row">
+                                    <p
+                                        id="word-selected-english"
+                                        class="block w-2/3 px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-50 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                    >
+                                        {{ selectedWord?.english ?? "単語を新規入力または選択" }}</p>
+                                    <p
+                                        id="word-selected-pos"
+                                        class="block w-2/3 px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-50 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                    >
+                                        {{ selectedWord?.pos ?? "品詞" }}</p>
+                                </div>
+
                                 <input
                                     id="word-english"
                                     type="text"
@@ -362,6 +370,7 @@
                                         :id="'usage-example-' + (index + 1)"
                                         type="text"
                                         class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                        @input="validateExample(index)"
                                     >
                                 </div>
                                 <!-- End Usages Example 1 Input Col -->
@@ -500,6 +509,9 @@ const props = defineProps({
     previousRouteAndParams: {
         type: Object,
     },
+    newWord: {
+        type: Object,
+    },
     newWordId: {
         type: Number,
     },
@@ -507,11 +519,6 @@ const props = defineProps({
         type: String,
     },
 });
-
-// --- usagesの準備
-// const defaultUsages = ref<Usage[]>([
-//     { example: '', translation: '' },
-// ]);
 
 // --- Form
 const form = useForm({
@@ -588,6 +595,10 @@ watch(() => wordFilter.value, (newValue) => {
 watch(() => props.newWordId, (newId) => {
     if (newId) {
         form.word_id = newId;
+
+        nextTick(() => {
+            document.getElementById('line-definition')?.focus();
+        });
     }
 });
 
@@ -630,13 +641,26 @@ const selectThisWord = (id: number | undefined) => {
 let selectedWord = computed(() => {
     if (form.word_id > 0 && props.words.length > 0) {
         let theEnglish = props.words.find(word => word.id === form.word_id)?.english;
-        return theEnglish;
-    } else if (props.newWordEnglish !== '') {
-        return props.newWordEnglish;
+        let theEnglishPos = props.words.find(word => word.id === form.word_id)?.part_of_speech;
+        return {
+            english: theEnglish,
+            pos: theEnglishPos
+        };
+    } else if (props.newWord?.english !== '') {
+        return { english: props.newWord?.english, pos: props.newWord?.part_of_speech };
     }
 })
 
 // Usagesの処理
+// --- 例文の検証
+const validateExample = (index: number) => {
+    const example = form.usages[index].example;
+    const isValid = !/\s{2,}/.test(example);
+    if (!isValid) {
+        form.usages[index].example = example.replace(/\s{2,}/g, ' ');
+    }
+}
+
 // --- Add Usageの表示/非表示
 const isValidUsage = computed(() => {
     let usagesLength = form.usages.length;

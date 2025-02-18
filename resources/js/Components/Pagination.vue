@@ -1,5 +1,5 @@
 <template>
-    <div class="mx-auto max-w-7xl">
+    <div class="mx-auto print:hidden max-w-7xl">
         <div class="mx-auto max-w-none">
             <div class="overflow-hidden bg-white shadow sm:rounded-b-lg dark:bg-slate-500">
                 <div
@@ -7,7 +7,7 @@
                     <div class="flex justify-between flex-1 sm:hidden" />
                     <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
-                            <p class="text-xs text-gray-700 dark:text-gray-50">
+                            <p class="text-xs text-gray-700 dark:text-gray-50 sm:hidden lg:block">
                                 Showing
                                 <!-- space -->
                                 <span class="font-medium">{{ data.meta.from }}</span>

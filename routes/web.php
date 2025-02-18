@@ -23,6 +23,10 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/tests', function () {
+        return Inertia::render('Tests');
+    })->name('tests');
+    Route::get('/lines/final-check', [LineController::class, 'finalCheck'])->name('lines.finalCheck');
     Route::get('/lines/reorder-test', [LineController::class, 'reorderTest'])->name('lines.reorderTest');
     // Route::get('/lines/create', [LineController::class, 'create'])->name('lines.create');
     Route::resource('/lines', LineController::class);

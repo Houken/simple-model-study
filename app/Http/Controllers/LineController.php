@@ -71,6 +71,20 @@ class LineController extends Controller
         ]);
     }
 
+    public function finalCheck(Request $request)
+    {
+        $linesQuery = Line::bookFilter($request);
+        $wordFilter = $request->wordFilter;
+        $this->applyLineFilterByWord($linesQuery, $wordFilter);
+        $lines = LineResource::collection($linesQuery->paginate(40));
+        $books = BookResource::collection(Book::all());
+
+        return Inertia::render('Lines/FinalCheck', [
+            'lines' => $lines,
+            'books' => $books,
+        ]);
+    }
+
     /**
      * Show the form for creating a new resource.
      */

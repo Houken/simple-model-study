@@ -22,6 +22,9 @@ export default {
             height: {
                 a4: '297mm',
             },
+            colors: {
+                'red-sheet': '#ffaaaa',
+            }
         },
     },
 

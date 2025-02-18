@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div class="min-h-screen bg-gray-100 print:bg-white dark:bg-gray-900">
             <nav class="bg-white border-b border-gray-100 dark:border-gray-700 dark:bg-gray-800 print:hidden">
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 mx-auto max-w-7xl sm:px-4 lg:px-8">
@@ -23,17 +23,69 @@
                                     Dashboard
                                 </NavLink>
                                 <NavLink
-                                    :href="route('lines.index')"
-                                    :active="isActiveRoute('lines')"
-                                >
-                                    Lines
-                                </NavLink>
-                                <NavLink
                                     :href="route('words.index')"
                                     :active="isActiveRoute('words')"
                                 >
                                     Words
                                 </NavLink>
+                                <div
+                                    class="hs-dropdown [--strategy:absolute] [--flip:false] hs-dropdown-example relative inline-flex">
+
+                                    <NavLink
+                                        :href="route('lines.index')"
+                                        :active="isActiveRoute('lines')"
+                                    >
+                                        Lines
+                                    </NavLink>
+                                    <button
+                                        id="hs-dropdown-example"
+                                        type="button"
+                                        class="inline-flex items-center px-2 py-3 text-sm font-medium text-gray-800 border-b-2 border-transparent hs-dropdown-toggle gap-x-2 hover:border-indigo-400 focus:border-indigo-700 disabled:opacity-50 disabled:pointer-events-none dark:text-gray-100 dark:border-indigo-600"
+                                        aria-haspopup="menu"
+                                        aria-expanded="false"
+                                        aria-label="Dropdown"
+                                    >
+
+                                        <svg
+                                            class="text-gray-600 hs-dropdown-open:rotate-180 size-4 dark:text-neutral-600"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <path d="m6 9 6 6 6-6"></path>
+                                        </svg>
+                                    </button>
+
+                                    <div
+                                        class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 w-56 hidden z-10 mt-2 min-w-60 bg-white shadow-md rounded-lg p-2 dark:bg-neutral-800 dark:border dark:border-neutral-700 dark:divide-neutral-700"
+                                        role="menu"
+                                        aria-orientation="vertical"
+                                        aria-labelledby="hs-dropdown-example"
+                                    >
+                                        <Link
+                                            class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
+                                            :href="route('lines.index')"
+                                        >
+                                        list
+                                        </Link>
+                                        <Link
+                                            class="flex items-center gap-x-3.5 py-2 px-3 rounded-lg text-sm text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700 dark:hover:text-neutral-300 dark:focus:bg-neutral-700"
+                                            :href="route('lines.create')"
+                                        >
+                                        new
+                                        </Link>
+                                    </div>
+                                </div>
+                                <NavLink
+                                    :href="route('tests')"
+                                    :active="route().current('tests')"
+                                >Tests</NavLink>
                             </div>
                         </div>
 
