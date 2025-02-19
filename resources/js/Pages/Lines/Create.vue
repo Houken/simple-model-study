@@ -90,6 +90,7 @@
                                 leave-to-class="scale-y-0 -translate-y-full opacity-0"
                             >
                                 <div
+                                    id="createNewWord"
                                     v-show="creatingNewWord"
                                     class="grid grid-cols-12 gap-2 py-4 -mx-4 -mt-4 shadow-inner shadow-slate-400 dark:shadow-slate-900 px-7 sm:col-span-12 bg-slate-300 dark:bg-slate-800"
                                 >
@@ -249,8 +250,9 @@
                                                     <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
                                                         <tr v-for="word in props.words">
                                                             <td
-                                                                class="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-neutral-200">
+                                                                class="w-[4rem] px-2 py-0 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-neutral-200">
                                                                 <button
+                                                                    class="px-3 py-2 m-0 rounded hover:bg-red-200 hover:text-black"
                                                                     type="button"
                                                                     @click="selectThisWord(word.id)"
                                                                 >{{
@@ -258,7 +260,8 @@
                                                             </td>
                                                             <td
                                                                 class="px-6 py-4 text-sm text-gray-800 whitespace-nowrap dark:text-neutral-200">
-                                                                {{ word.english }}</td>
+                                                                <PosAndWord :word=word />
+                                                            </td>
                                                             <td
                                                                 class="px-6 py-4 text-sm font-medium whitespace-nowrap text-end">
                                                             </td>
@@ -485,6 +488,7 @@ import { CirclePlus, CircleX, Database, Plus } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, PropType, ref, watch } from 'vue';
 import { ParameterValue } from '../../../../vendor/tightenco/ziggy/src/js';
 import EncloseInQuotes from '@/Components/EncloseInQuotes.vue';
+import PosAndWord from '@/Components/PosAndWord.vue';
 
 // Variables --------
 // --- Props
@@ -519,6 +523,7 @@ const props = defineProps({
         type: String,
     },
 });
+// --- Other Variables
 
 // --- Form
 const form = useForm({
@@ -634,7 +639,10 @@ watch(
 // --- --- wordの選択と表示
 const selectThisWord = (id: number | undefined) => {
     if (id) {
+        // formのword_idを直接指定し、
+        // フラグを下ろして新規word入力領域は閉じる
         form.word_id = id;
+        creatingNewWord.value = false;
     }
 }
 
