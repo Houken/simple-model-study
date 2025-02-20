@@ -182,6 +182,9 @@ class LineController extends Controller
         $line->save();
         if ($usages) {
             foreach ($usages as $usageData) {
+                if (empty($usageData['example']) || empty($usageData['translation'])) {
+                    continue;
+                }
                 $usage = new Usage($usageData);
                 $usage->line()->associate($line); // Lineと関連付ける
                 $usage->save();

@@ -252,7 +252,7 @@
                                                             <td
                                                                 class="w-[4rem] px-2 py-0 text-sm font-medium text-gray-800 whitespace-nowrap dark:text-neutral-200">
                                                                 <button
-                                                                    class="px-3 py-2 m-0 rounded hover:bg-red-200 hover:text-black"
+                                                                    class="px-3 py-2 m-0 rounded hover:bg-teal-100 hover:text-black"
                                                                     type="button"
                                                                     @click="selectThisWord(word.id)"
                                                                 >{{
@@ -453,6 +453,7 @@
                         <!-- Store Line Section -->
                         <div
                             class="flex justify-end p-4 -m-4 rounded-b-lg sm:col-span-12 gap-x-2 dark:bg-slate-800 bg-slate-200">
+                            <!-- Cancel Store Line -->
                             <button
                                 @click="backToPrevious"
                                 type="button"
@@ -460,6 +461,7 @@
                             >
                                 Cancel
                             </button>
+                            <!-- Store Line -->
                             <button
                                 type="submit"
                                 :disabled="form.processing"
@@ -526,6 +528,8 @@ const props = defineProps({
 // --- Other Variables
 
 // --- Form
+// --- --- フォームデータの定義
+// --- --- usageはUsageの配列
 const form = useForm({
     book_id: props.nextBookId,
     word_id: props.newWordId || 0,
@@ -661,6 +665,8 @@ let selectedWord = computed(() => {
 
 // Usagesの処理
 // --- 例文の検証
+// --- --- usageのinput要素から文字入力をトリガにして呼ばれる
+// --- --- --- 例文のスペースを2つ以上のスペースを1つに変換
 const validateExample = (index: number) => {
     const example = form.usages[index].example;
     const isValid = !/\s{2,}/.test(example);
@@ -670,6 +676,8 @@ const validateExample = (index: number) => {
 }
 
 // --- Add Usageの表示/非表示
+// --- --- usagesの最後の要素が有効な値(例文と訳文)を持っている場合と
+// --- --- まだusageが存在しない場合に、Add Usageを表示
 const isValidUsage = computed(() => {
     let usagesLength = form.usages.length;
     if (usagesLength === 0) {
@@ -678,7 +686,8 @@ const isValidUsage = computed(() => {
         return form.usages.length > 0 && !!form.usages[form.usages.length - 1]?.example && !!form.usages[form.usages.length - 1]?.translation;
     }
 });
-// --- Usageフォームの追加処理
+// --- Usageフォームの追加処理(Add Usage)
+// --- --- Add Usageボタンをクリックすると呼ばれる
 const handleUsage = () => {
     const newUsageIndex = form.usages.push({ example: "", translation: "" });
     const lastExampleId = `usage-example-${newUsageIndex}`;
