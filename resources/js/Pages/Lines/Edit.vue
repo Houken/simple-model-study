@@ -50,19 +50,21 @@
 
         <div class="py-4">
             <!-- Card Section -->
-            <div class="max-w-4xl px-4 py-10 mx-auto sm:px-6 lg:px-8 lg:py-4">
+            <div class="max-w-4xl p-4 mx-auto sm:px-6 lg:px-8 lg:py-4">
                 <!-- Card -->
-                <div class="p-4 bg-white shadow rounded-xl sm:p-7 dark:bg-neutral-900">
+                <div class="p-4 bg-white shadow rounded-xl dark:bg-slate-800">
                     <form @submit.prevent="updateLine">
-                        <!-- Section -->
+                        <!-- Book info Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
+                            <!-- Book info title column -->
                             <SectionTitle
                                 title="Book info."
                                 class="rounded-t-lg"
                             />
-                            <!-- End Col -->
-
+                            <!-- End Book Info Col -->
+                            <!-- Book Selector -->
+                            <!-- Book Selector label column -->
                             <div class="sm:col-span-3">
                                 <label
                                     for="book-select"
@@ -71,34 +73,22 @@
                                     Book
                                 </label>
                             </div>
-                            <!-- End Col -->
-
+                            <!-- End Book Selector label Col -->
+                            <!-- Book Selector Menu column -->
                             <div class="sm:col-span-9">
                                 <div class="sm:flex">
-
-                                    <select
+                                    <BookSelector
                                         v-model="form.book_id"
-                                        id="book-select"
-                                        class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                    >
-                                        <option
-                                            value=""
-                                            disabled
-                                        >単語集を選択</option>
-                                        <option
-                                            v-for="book in books"
-                                            :key="book.id"
-                                            :value="book.id"
-                                            :selected="book.id === props.line?.data.book.id"
-                                        >{{ book.title }}</option>
-                                    </select>
+                                        :books="books"
+                                        :selectedBookId="props.line?.data.book.id"
+                                    />
                                 </div>
                                 <div
                                     v-if="form.errors.book_id"
                                     class="font-bold text-red-400"
                                 >{{ form.errors.book_id }}</div>
                             </div>
-                            <!-- End Col -->
+                            <!-- End Book Selector Menu Col -->
                         </div>
                         <!-- End Section -->
 
@@ -379,6 +369,7 @@ import { Book, Word, Usage, Line } from '@/types/models';
 import { CirclePlus, Filter, SquareChevronLeft, SquareChevronRight } from 'lucide-vue-next';
 import SectionTitle from '@/Components/SectionTitle.vue';
 import EncloseInQuotes from '@/Components/EncloseInQuotes.vue';
+import BookSelector from '@/Components/BookSelector.vue';
 
 const props = defineProps({
     books: {

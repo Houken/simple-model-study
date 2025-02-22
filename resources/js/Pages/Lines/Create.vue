@@ -9,22 +9,20 @@
             </h2>
         </template>
 
-        <div class="py-3">
+        <div class="py-4">
             <!-- Card Section -->
-            <div class="max-w-4xl px-4 py-3 mx-auto lg:px-8">
+            <div class="max-w-4xl p-4 mx-auto sm:px-6 lg:px-8 lg:py-4">
                 <!-- Card -->
-                <div class="px-4 py-3 bg-white shadow rounded-xl dark:bg-neutral-900">
+                <div class="p-4 bg-white shadow rounded-xl dark:bg-slate-800">
                     <form @submit.prevent="form.post(route('lines.store'))">
                         <!-- Book info Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <!-- Book info title column -->
-                            <div class="sm:col-span-12">
-                                <SectionTitle
-                                    title="Book info."
-                                    class="rounded-t-lg"
-                                />
-                            </div>
+                            <SectionTitle
+                                title="Book info."
+                                class="rounded-t-lg"
+                            />
                             <!-- End Book info title Col -->
 
                             <!-- Book info Label Column -->
@@ -40,24 +38,11 @@
 
                             <!-- Book info Select Column -->
                             <div class="sm:col-span-9">
-                                <select
-                                    tabindex="0"
+                                <BookSelector
                                     v-model="form.book_id"
-                                    placeholder="単語集を選択"
-                                    id="book-select"
-                                    class="block px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm w-[24rem] pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                >
-                                    <option
-                                        disabled
-                                        value=0
-                                    >単語集を選択</option>
-                                    <option
-                                        v-for="book in books"
-                                        :value="book.id"
-                                        :key="book.id"
-                                    >{{ book.title }} 第{{
-                                        book.version }}版</option>
-                                </select>
+                                    :books="books"
+                                    :selected-book-id="props.nextBookId"
+                                />
                             </div>
                             <!-- End Book info Select Col -->
                         </div>
@@ -92,13 +77,13 @@
                                 <div
                                     id="createNewWord"
                                     v-show="creatingNewWord"
-                                    class="grid grid-cols-12 gap-2 py-4 -mx-4 -mt-4 shadow-inner shadow-slate-400 dark:shadow-slate-900 px-7 sm:col-span-12 bg-slate-300 dark:bg-slate-800"
+                                    class="grid grid-cols-12 gap-2 py-4 -mx-4 -mt-4 shadow-inner shadow-slate-400 dark:shadow-slate-900 px-7 sm:col-span-12 bg-slate-300 dark:bg-slate-700"
                                 >
                                     <!-- New Word Label Column -->
                                     <div class="sm:col-span-3">
                                         <label
                                             for="word-new-english"
-                                            class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
+                                            class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-slate-500"
                                         >
                                             New Word
                                         </label>
@@ -112,7 +97,7 @@
                                             v-model="newEnglish"
                                             id="word-new-english"
                                             type="text"
-                                            class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                            class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-600 dark:border-neutral-700 dark:text-slate-300 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                         >
                                     </div>
                                     <!-- End New Word Input Col -->
@@ -139,7 +124,7 @@
                                     <div class="sm:col-span-3">
                                         <label
                                             for="word-part-of-speech"
-                                            class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-neutral-500"
+                                            class="inline-block text-sm font-medium text-gray-500 mt-2.5 dark:text-slate-500"
                                         >
                                             Part of Speech
                                         </label>
@@ -154,7 +139,7 @@
                                             list="part_of_speech_list"
                                             id="word-part-of-speech"
                                             type="text"
-                                            class="block w-[12rem] px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                            class="block w-[12rem] px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-600 dark:border-neutral-700 dark:text-slate-300 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                         >
                                         <datalist id="part_of_speech_list">
                                             <option v-for="pos in listOfPoses">{{ pos }}</option>
@@ -202,12 +187,12 @@
                                         id="word-selected-english"
                                         class="block w-2/3 px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-50 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                     >
-                                        {{ selectedWord?.english ?? "単語を新規入力または選択" }}</p>
-                                    <p
-                                        id="word-selected-pos"
-                                        class="block w-2/3 px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm bg-slate-50 pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                    >
-                                        {{ selectedWord?.pos ?? "品詞" }}</p>
+                                        <PosAndWord
+                                            v-if="selectedWord?.english"
+                                            :word="selectedWord"
+                                        />
+                                        <span v-else>単語を新規入力または選択</span>
+                                    </p>
                                 </div>
 
                                 <input
@@ -484,13 +469,14 @@
 import SectionTitle from '@/Components/SectionTitle.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Book, Word, Usage } from '@/types/models';
-import { encloseSentencesInQuotes, insertSpecialChar } from '@/Utils/InputUtils';
+import { insertSpecialChar } from '@/Utils/InputUtils';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { CirclePlus, CircleX, Database, Plus } from 'lucide-vue-next';
 import { computed, nextTick, onMounted, PropType, ref, watch } from 'vue';
 import { ParameterValue } from '../../../../vendor/tightenco/ziggy/src/js';
 import EncloseInQuotes from '@/Components/EncloseInQuotes.vue';
 import PosAndWord from '@/Components/PosAndWord.vue';
+import BookSelector from '@/Components/BookSelector.vue';
 
 // Variables --------
 // --- Props
@@ -651,15 +637,13 @@ const selectThisWord = (id: number | undefined) => {
 }
 
 let selectedWord = computed(() => {
+    // form.word_idに有効な値があって、配列props.wordsに要素が存在する場合
     if (form.word_id > 0 && props.words.length > 0) {
-        let theEnglish = props.words.find(word => word.id === form.word_id)?.english;
-        let theEnglishPos = props.words.find(word => word.id === form.word_id)?.part_of_speech;
-        return {
-            english: theEnglish,
-            pos: theEnglishPos
-        };
+        // form.word_idに該当するwordを取得
+        let theWord = props.words.find(word => word.id === form.word_id);
+        return theWord;
     } else if (props.newWord?.english !== '') {
-        return { english: props.newWord?.english, pos: props.newWord?.part_of_speech };
+        return { english: props.newWord?.english, part_of_speech: props.newWord?.part_of_speech };
     }
 })
 

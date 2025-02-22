@@ -138,10 +138,12 @@ class LineController extends Controller
 
         // wordの絞り込み処理
         if ($request->wordFilter) {
+            // wordsテーブルの新規queryインスタンスを作成
             $wordsQuery = Word::query();
             $wordFilter = $request->wordFilter;
+            // englishカラムに前方一致検索をかける
             $this->applyWordFilter($wordsQuery, $wordFilter);
-            $words = $wordsQuery->limit(10)->get();
+            $words = $wordsQuery->orderBy('english')->limit(10)->get();
         } else {
             $words = [];
         }
