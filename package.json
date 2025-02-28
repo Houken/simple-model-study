@@ -32,7 +32,13 @@
     "dependencies": {
         "@popperjs/core": "^2.11.8",
         "@preline/dropdown": "^2.6.0",
+        "@vueuse/core": "^12.7.0",
+        "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
         "lucide-vue-next": "^0.460.0",
-        "preline": "^2.5.1"
+        "preline": "^2.5.1",
+        "reka-ui": "^2.0.0",
+        "tailwind-merge": "^3.0.2",
+        "tailwindcss-animate": "^1.0.7"
     }
 }

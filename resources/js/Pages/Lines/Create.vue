@@ -47,7 +47,6 @@
                             <!-- End Book info Select Col -->
                         </div>
                         <!-- End Book info Section -->
-
                         <!-- Word Section -->
                         <div
                             class="grid gap-2 py-4 border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
@@ -64,7 +63,6 @@
                                 </SectionTitle>
                             </div>
                             <!-- End Word Section Title Col -->
-
                             <!-- Create New Word Section -->
                             <transition
                                 enter-active-class="duration-1000 ease-out"
@@ -448,6 +446,7 @@
                             </button>
                             <!-- Store Line -->
                             <button
+                                tabindex="99"
                                 type="submit"
                                 :disabled="form.processing"
                                 class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
