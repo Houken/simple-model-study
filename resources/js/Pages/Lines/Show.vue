@@ -50,19 +50,6 @@
                 </div>
                 <!-- Create Next or Edit or Back To List buttons -->
                 <div class="flex items-center justify-between">
-                    <div
-                        v-if="!props.nextLineExists"
-                        class="me-6"
-                    >
-                        <button
-                            type="button"
-                            @click="createNext()"
-                            class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-teal-500 border border-transparent rounded-lg outline outline-teal-500 outline-1 outline-offset-1 gap-x-1 hover:bg-teal-600 focus:bg-teal-600 disabled:opacity-50 disabled:pointer-events-none"
-                        >
-                            <CirclePlus :size="16" />Create Next
-                        </button>
-                    </div>
-
                     <div class="inline-flex">
                         <Link
                             type="button"
@@ -253,6 +240,31 @@
                             <!-- End Col -->
                         </div>
                         <!-- End Section -->
+
+                        <!-- Store Line Section -->
+                        <div
+                            class="flex justify-end p-4 -m-4 rounded-b-lg sm:col-span-12 gap-x-2 dark:bg-slate-800 bg-slate-200">
+                            <!-- Cancel Store Line -->
+                            <button
+                                type="button"
+                                class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
+                            >
+                                <ArrowLeft :size="14" />back to List
+                            </button>
+                            <div
+                                v-if="!props.nextLineExists"
+                                class="me-6"
+                            >
+                                <button
+                                    tabindex="1"
+                                    type="button"
+                                    @click="createNext()"
+                                    class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-teal-500 border border-transparent rounded-lg outline outline-teal-500 outline-1 focus:outline-offset-2 gap-x-1 hover:bg-teal-600 focus:bg-teal-600 disabled:opacity-50 disabled:pointer-events-none"
+                                >
+                                    <CirclePlus :size="16" />Create Next
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- End Card -->

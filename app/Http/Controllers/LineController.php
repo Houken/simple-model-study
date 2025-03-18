@@ -71,6 +71,29 @@ class LineController extends Controller
         ]);
     }
 
+    public function standardTest(Request $request)
+    {
+        // dd($request);
+        $linesQuery = Line::bookFilter($request)->indexNoFilter($request);
+        $wordFilter = $request->wordFilter;
+        $this->applyLineFilterByWord($linesQuery, $wordFilter);
+        $allLines = $linesQuery->get();
+        $lines = $allLines->random(25);
+        // dd($lines);
+        $books = BookResource::collection(Book::all());
+        $bookId = $request->book;
+        $indexNoFrom = $request->from;
+        $indexNoTo = $request->to;
+
+        return Inertia::render('Lines/StandardTest', [
+            'lines' => $lines,
+            'books' => $books,
+            'bookId' => intval($bookId),
+            'indexNoFrom' => intval($indexNoFrom),
+            'indexNoTo' => intval($indexNoTo),
+        ]);
+    }
+
     public function finalCheck(Request $request)
     {
         $linesQuery = Line::bookFilter($request);
@@ -125,6 +148,7 @@ class LineController extends Controller
 
     public function create(Request $request)
     {
+        // dd($request);
         // 遷移元を取得
         $previousRouteAndParams = $this->getPreviousRouteAndParams();
         // Booksドロップダウン用のデータを用意
@@ -149,6 +173,13 @@ class LineController extends Controller
             $words = [];
         }
 
+        // word_idが指定済みなら、既存のlineのdefinitionの値のリストを返す
+        if ($request->wordId) {
+            $lines = Line::where('word_id', $request->wordId);
+            $definitions = $lines->select('id', 'book_id', 'definition')->get();
+            // dd($definitions);
+        }
+
         return Inertia::render('Lines/Create', [
             'books' => $books,
             'listOfPoses' => $listOfPoses,
@@ -156,6 +187,7 @@ class LineController extends Controller
             'nextBookId' => $nextBookId,
             'nextIndexNo' => $nextIndexNo,
             'previousRouteAndParams' => $previousRouteAndParams,
+            'existingDefinitions' => $definitions ?? [],
         ]);
     }
 
@@ -208,6 +240,16 @@ class LineController extends Controller
         $nextLineExists = Line::where('book_id', $bookId)->where('index_no', $nextIndex)->exists();
 
         return Inertia::render('Lines/Show', ['line' => $line, 'nextLineExists' => $nextLineExists]);
+    }
+
+    public function neoShow(Line $line)
+    {
+        $line = new LineResource(Line::findOrFail($line->id));
+        $bookId = $line->book_id;
+        $nextIndex = $line->index_no + 1;
+        $nextLineExists = Line::where('book_id', $bookId)->where('index_no', $nextIndex)->exists();
+
+        return Inertia::render('Lines/NeoShow', ['line' => $line, 'nextLineExists' => $nextLineExists]);
     }
 
     /**

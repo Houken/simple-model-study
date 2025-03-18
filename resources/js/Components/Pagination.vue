@@ -35,7 +35,7 @@
                                     :disabled="link.active || !link.url"
                                     :key="index"
                                     type="button"
-                                    class="min-h-[38px] min-w-[38px] py-2 px-2.5 inline-flex justify-center items-center gap-x-1.5 text-sm first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
+                                    class="min-h-[38px] min-w-[38px] py-2 px-2 inline-flex justify-center items-center gap-x-1.2 text-xs first:rounded-s-lg last:rounded-e-lg border border-gray-200 text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none"
                                     :class="{
                                         'z-10 bg-indigo-50 dark:bg-indigo-900 border-indigo-500 text-indigo-600 dark:text-indigo-300': link.active,
                                         'bg-white dark:bg-gray-800 border-gray-300 text-gray-500 dark:text-neutral-400 hover:bg-gray-50': !link.active,

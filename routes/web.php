@@ -23,12 +23,15 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/lines/neo-show/{line}', [LineController::class, 'neoShow'])->name('lines.neoShow');
+
     Route::get('/tests', function () {
         return Inertia::render('Tests');
     })->name('tests');
     Route::get('/lines/final-check', [LineController::class, 'finalCheck'])->name('lines.finalCheck');
     Route::get('/lines/reorder-test', [LineController::class, 'reorderTest'])->name('lines.reorderTest');
-    // Route::get('/lines/create', [LineController::class, 'create'])->name('lines.create');
+    Route::get('/lines/standard-test', [LineController::class, 'standardTest'])->name('lines.standardTest');
+    // /lines/neo-show/{id}にアクセスがあったら、LineControllerのneoShowメソッドを実行して一つのLineインスタンスを表示する
     Route::resource('/lines', LineController::class);
     // Route::get('/words/create', function () {
     //     session(['redirect_to' => url()->previous()]);

@@ -17,7 +17,7 @@
                     <form @submit.prevent="form.post(route('lines.store'))">
                         <!-- Book info Section -->
                         <div
-                            class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
+                            class="grid gap-2 py-4 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <!-- Book info title column -->
                             <SectionTitle
                                 title="Book info."
@@ -262,7 +262,7 @@
 
                         <!-- Line Section -->
                         <div
-                            class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
+                            class="grid gap-2 py-4 border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <!-- Line Section Title -->
                             <div class="sm:col-span-12">
                                 <SectionTitle title="Line info." />
@@ -320,12 +320,41 @@
                                 >
                             </div>
                             <!-- End Line Definition Input Col -->
+                            <!-- if existingDefinition exists then show this table -->
+                            <div
+                                v-if="props.existingDefinitions"
+                                class="sm:col-span-9 sm:col-start-4"
+                            >
+                                <table class="border border-gray-200">
+                                    <tbody>
+                                        <tr
+                                            v-for="(existingDefinition, index) in props.existingDefinitions"
+                                            :key="existingDefinition.id"
+                                            class="even:bg-gray-50 dark:even:bg-neutral-800 hover:bg-blue-100 dark:hover:bg-neutral-700 animate-slide-in-right"
+                                            @click="copyDefinition(index)"
+                                        >
+                                            <td
+                                                class="px-2 py-2 text-xs text-gray-800 whitespace-nowrap dark:text-neutral-200">
+                                                {{ existingDefinition.definition }}
+
+                                            </td>
+                                            <td
+                                                class="px-2 py-2 text-xs text-blue-800 whitespace-nowrap dark:text-neutral-200">
+                                                <BookAndVersion
+                                                    :book="existingDefinition.book"
+                                                    class="p-1 bg-blue-100 rounded"
+                                                />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <!-- End Line Section -->
 
                         <!-- Usages Section -->
                         <div
-                            class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
+                            class="grid gap-2 py-4 border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
                             <!-- Usages Section Title Column -->
                             <div class="sm:col-span-12">
                                 <SectionTitle title="Usages" />
@@ -467,7 +496,7 @@
 <script setup lang="ts">
 import SectionTitle from '@/Components/SectionTitle.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Book, Word, Usage } from '@/types/models';
+import { Book, Word, Usage, Line } from '@/types/models';
 import { insertSpecialChar } from '@/Utils/InputUtils';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { CirclePlus, CircleX, Database, Plus } from 'lucide-vue-next';
@@ -476,6 +505,8 @@ import { ParameterValue } from '../../../../vendor/tightenco/ziggy/src/js';
 import EncloseInQuotes from '@/Components/EncloseInQuotes.vue';
 import PosAndWord from '@/Components/PosAndWord.vue';
 import BookSelector from '@/Components/BookSelector.vue';
+import NewOrPicWord from '@/Components/NewOrPicWord.vue';
+import BookAndVersion from '@/Components/BookAndVersion.vue';
 
 // Variables --------
 // --- Props
@@ -509,6 +540,10 @@ const props = defineProps({
     newWordEnglish: {
         type: String,
     },
+    existingDefinitions: {
+        type: Array as PropType<Line[]>,
+        default: () => [],
+    }
 });
 // --- Other Variables
 
@@ -611,6 +646,9 @@ let wordsUrl = computed(() => {
     if (wordFilter.value) {
         url.searchParams.append("wordFilter", wordFilter.value);
     }
+    if (form.word_id) {
+        url.searchParams.append("wordId", form.word_id.toString());
+    }
 
     return url;
 });
@@ -645,6 +683,12 @@ let selectedWord = computed(() => {
         return { english: props.newWord?.english, part_of_speech: props.newWord?.part_of_speech };
     }
 })
+
+// Lineの処理
+// --- 既存のDefinitionからのコピー
+const copyDefinition = (id: number) => {
+    form.definition = props.existingDefinitions[id].definition;
+}
 
 // Usagesの処理
 // --- 例文の検証
