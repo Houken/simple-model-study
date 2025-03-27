@@ -10,43 +10,10 @@
                         Line: Show
                     </h2>
                     <!-- Prev or Next Buttons -->
-                    <div class="flex ml-4">
-                        <div v-if="!prevItem">
-                            <SquareChevronLeft
-                                :size="24"
-                                :stroke-width="1"
-                                class="dark:text-white/75 opacity-20 dark:hover:text-white active:bg-yellow-900"
-                            />
-                        </div>
-                        <Link
-                            :href="route('lines.show', { line: prevItem })"
-                            v-if="prevItem"
-                        >
-                        <SquareChevronLeft
-                            :size="24"
-                            :stroke-width="1"
-                            class="dark:text-white/75 dark:hover:text-white active:bg-yellow-900"
-                        />
-                        </Link>
-                        <Link
-                            :href="route('lines.show', { line: nextItem })"
-                            v-if="props.nextLineExists"
-                        >
-                        <SquareChevronRight
-                            :size="24"
-                            :stroke-width="1"
-                            class="dark:text-white/75 dark:hover:text-white active:bg-yellow-900"
-                        />
-                        </Link>
-                        <div v-if="!props.nextLineExists">
-                            <SquareChevronRight
-                                :size="24"
-                                :stroke-width="1"
-                                class="dark:text-white/75 opacity-10 dark:hover:text-white active:bg-yellow-900"
-                            />
-                        </div>
-                    </div>
-
+                    <MoveToPreviousAndNextRecord
+                        :id="props.line?.data.id"
+                        :nextLineExists="props.nextLineExists"
+                    />
                 </div>
                 <!-- Create Next or Edit or Back To List buttons -->
                 <div class="flex items-center justify-between">
@@ -245,12 +212,13 @@
                         <div
                             class="flex justify-end p-4 -m-4 rounded-b-lg sm:col-span-12 gap-x-2 dark:bg-slate-800 bg-slate-200">
                             <!-- Cancel Store Line -->
-                            <button
+                            <Link
+                                :href="getBackToListUrl()"
                                 type="button"
                                 class="inline-flex items-center px-2 py-1 text-xs font-medium text-gray-800 bg-white border border-gray-200 rounded-lg shadow-sm gap-x-2 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700"
                             >
-                                <ArrowLeft :size="14" />back to List
-                            </button>
+                            <ArrowLeft :size="14" />back to List
+                            </Link>
                             <div
                                 v-if="!props.nextLineExists"
                                 class="me-6"
@@ -277,13 +245,15 @@
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
-import { FlashMessage, Line, Word } from '@/types/models';
-import { computed, PropType } from 'vue';
+import { Line } from '@/types/models';
+import { PropType } from 'vue';
 import ExampleDecode from '@/Components/ExampleDecode.vue';
 import SectionTitle from '@/Components/SectionTitle.vue';
-import { ArrowLeft, Edit, SquareChevronLeft, SquareChevronRight, CirclePlus } from 'lucide-vue-next';
+import { ArrowLeft, Edit, CirclePlus } from 'lucide-vue-next';
+import MoveToPreviousAndNextRecord from '@/Components/MoveToPreviousAndNextRecord.vue';
+import { onKeyStroke } from '@vueuse/core';
 
-const page = usePage();
+// const page = usePage();
 const props = defineProps({
     line: {
         type: Object as PropType<{ data: Line }>,
@@ -293,19 +263,25 @@ const props = defineProps({
     },
 });
 
-const prevItem = computed(() => {
-    if (props.line?.data.id && props.line?.data.id > 1) {
-        return props.line?.data.id - 1;
-    } else {
-        return false;
-    }
-});
-const nextItem = computed(() => {
-    if (props.line?.data.id) {
-        return props.line?.data.id + 1;
+
+onKeyStroke('ArrowRight', () => {
+    if (props.nextLineExists && props.line?.data?.id) {
+        router.get(route('lines.show', { line: props.line.data.id + 1 }));
     }
 });
 
+onKeyStroke('ArrowLeft', () => {
+    if (props.line?.data?.id && props.line.data.id > 1) {
+        router.get(route('lines.show', { line: props.line.data.id - 1 }));
+    }
+});
+
+// e キーがプレスされたら、Editに遷移
+onKeyStroke('e', () => {
+    if (props.line?.data?.id) {
+        router.get(route('lines.edit', { line: props.line.data.id }));
+    }
+});
 const createNext = () => {
     let nextBookId = props.line?.data.book.id;
     let nextIndexNo = (props.line?.data.index_no || 0) + 1;
@@ -314,6 +290,19 @@ const createNext = () => {
         nextBookId: nextBookId,
         nextIndexNo: nextIndexNo,
     })
+}
+
+const getBackToListUrl = () => {
+    const page = usePage();
+    const currentLine = props.line?.data;
+
+    if (!currentLine) {
+        return route('lines.index');
+    }
+    const itemsPerPage = page.props.perPage as number || 15;
+    const currentPage = Math.ceil(currentLine.index_no / itemsPerPage);
+
+    return route('lines.index', { page: currentPage });
 }
 </script>
 

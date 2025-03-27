@@ -30,7 +30,9 @@ class LineController extends Controller
         $linesQuery = Line::bookFilter($request);
         $wordFilter = $request->wordFilter;
         $this->applyLineFilterByWord($linesQuery, $wordFilter);
-        $lines = LineResource::collection($linesQuery->paginate(15));
+        $perPage = env('LINE_PER_PAGE', 15);
+        // dd($perPage);
+        $lines = LineResource::collection($linesQuery->paginate($perPage));
         $books = BookResource::collection(Book::all());
 
         return Inertia::render('Lines/Index', [
@@ -239,7 +241,11 @@ class LineController extends Controller
         $nextIndex = $line->index_no + 1;
         $nextLineExists = Line::where('book_id', $bookId)->where('index_no', $nextIndex)->exists();
 
-        return Inertia::render('Lines/Show', ['line' => $line, 'nextLineExists' => $nextLineExists]);
+        return Inertia::render('Lines/Show', [
+            'line' => $line,
+            'nextLineExists' => $nextLineExists,
+            'perPage' => env('LINE_PER_PAGE', 15),
+        ]);
     }
 
     public function neoShow(Line $line)

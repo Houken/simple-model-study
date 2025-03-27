@@ -24,7 +24,7 @@
                                 class="rounded-t-lg"
                             />
                             <!-- End Book info title Col -->
-
+                            <!-- Book Selector -->
                             <!-- Book info Label Column -->
                             <div class="sm:col-span-3">
                                 <label
@@ -43,8 +43,11 @@
                                     :books="books"
                                     :selected-book-id="props.nextBookId"
                                 />
-                            </div>
-                            <!-- End Book info Select Col -->
+                            </div><!-- End Book info Select Col -->
+                            <div
+                                v-if="form.errors.book_id"
+                                class="font-bold text-red-400"
+                            >{{ form.errors.book_id }}</div>
                         </div>
                         <!-- End Book info Section -->
                         <!-- Word Section -->
@@ -380,7 +383,7 @@
                                 <!-- Usages Example 1 Input Column -->
                                 <div class="sm:col-span-7">
                                     <input
-                                        :tabindex="(6 + index * 2)"
+                                        :tabindex="6 + index * 2"
                                         v-model="usage.example"
                                         :id="'usage-example-' + (index + 1)"
                                         type="text"

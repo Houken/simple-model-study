@@ -9,42 +9,10 @@
                     Line: EDIT
                 </h2>
                 <!-- Prev or Next Buttons -->
-                <div class="flex ml-4">
-                    <div v-if="!prevItem">
-                        <SquareChevronLeft
-                            :size="24"
-                            :stroke-width="1"
-                            class="dark:text-white/75 opacity-20 dark:hover:text-white active:bg-yellow-900"
-                        />
-                    </div>
-                    <Link
-                        :href="route('lines.show', { line: prevItem })"
-                        v-if="prevItem"
-                    >
-                    <SquareChevronLeft
-                        :size="24"
-                        :stroke-width="1"
-                        class="dark:text-white/75 dark:hover:text-white active:bg-yellow-900"
-                    />
-                    </Link>
-                    <Link
-                        :href="route('lines.show', { line: nextItem })"
-                        v-if="props.nextLineExists"
-                    >
-                    <SquareChevronRight
-                        :size="24"
-                        :stroke-width="1"
-                        class="dark:text-white/75 dark:hover:text-white active:bg-yellow-900"
-                    />
-                    </Link>
-                    <div v-if="!props.nextLineExists">
-                        <SquareChevronRight
-                            :size="24"
-                            :stroke-width="1"
-                            class="dark:text-white/75 opacity-10 dark:hover:text-white active:bg-yellow-900"
-                        />
-                    </div>
-                </div>
+                <MoveToPreviousAndNextRecord
+                    :id="props.line?.data.id"
+                    :nextLineExists="props.nextLineExists"
+                />
             </div>
         </template>
 
@@ -91,10 +59,10 @@
                             <!-- End Book Selector Menu Col -->
                         </div>
                         <!-- End Section -->
-
-                        <!-- Section -->
+                        <!-- Word Section -->
                         <div
                             class="grid gap-2 py-8 border-t border-gray-200 sm:grid-cols-12 sm:gap-4 first:pt-0 last:pb-0 first:border-transparent dark:border-neutral-700 dark:first:border-transparent">
+                            <!-- Word Section Title Column -->
                             <SectionTitle title="Word info." />
                             <!-- End Col -->
 
@@ -118,7 +86,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.word_id
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
 
                             <div class="relative sm:col-start-4 sm:col-span-9">
@@ -200,7 +168,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.index_no
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
 
                             <div class="sm:col-span-3">
@@ -226,7 +194,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.definition
-                            }}</div>
+                                }}</div>
                             <!-- End Col -->
                         </div>
                         <!-- End Section -->
@@ -260,6 +228,7 @@
                                 <!-- Usages Example 1 Input Column -->
                                 <div class="sm:col-span-7">
                                     <input
+                                        :tabindex="6 + index * 2"
                                         :id="'usage-example-' + (index + 1)"
                                         v-model="usage.example"
                                         type="text"
@@ -297,6 +266,7 @@
                                 <!-- Usages Translation 1 Input Column -->
                                 <div class="sm:col-span-7">
                                     <input
+                                        :tabindex="7 + index * 2"
                                         :id="'usage-translation-' + (index + 1)"
                                         v-model="usage.translation"
                                         type="text"
@@ -318,9 +288,11 @@
                                 </div>
                                 <!-- End Usages Example 1 Quotes Col -->
                             </div>
+                            <!-- Usages Add Usage Column -->
                             <div class="sm:col-span-3 sm:col-start-4">
                                 <p class="">
                                     <button
+                                        tabindex="16"
                                         :disabled="!isValidUsage"
                                         type="button"
                                         @click="handleUsage"
@@ -335,8 +307,9 @@
                         </div>
                         <!-- End Section -->
 
-
+                        <!-- Update Line Section -->
                         <div class="flex justify-end mt-5 gap-x-2">
+                            <!-- Cancel Update Line -->
                             <Link
                                 :href="route('lines.show', { line: props.line?.data.id })"
                                 type="button"
@@ -344,7 +317,9 @@
                             >
                             Cancel
                             </Link>
+                            <!-- Update Line -->
                             <button
+                                tabindex="99"
                                 type="submit"
                                 :disabled="form.processing"
                                 class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
@@ -363,13 +338,14 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, InertiaForm, Link, router, useForm, usePage } from '@inertiajs/vue3';
-import { computed, PropType, ref, watch } from 'vue';
+import { Head, InertiaForm, Link, useForm } from '@inertiajs/vue3';
+import { computed, nextTick, PropType, ref } from 'vue';
 import { Book, Word, Usage, Line } from '@/types/models';
-import { CirclePlus, Filter, SquareChevronLeft, SquareChevronRight } from 'lucide-vue-next';
+import { CirclePlus, Filter } from 'lucide-vue-next';
 import SectionTitle from '@/Components/SectionTitle.vue';
 import EncloseInQuotes from '@/Components/EncloseInQuotes.vue';
 import BookSelector from '@/Components/BookSelector.vue';
+import MoveToPreviousAndNextRecord from '@/Components/MoveToPreviousAndNextRecord.vue';
 
 const props = defineProps({
     books: {
@@ -410,9 +386,7 @@ const form: InertiaForm<{
 });
 
 let books = ref<Book[]>(props.books?.data ?? []),
-    book_id = ref(""),
-    wordFilter = ref<string>(""),
-    word_id = ref("");
+    wordFilter = ref<string>("");
 
 const isValidUsage = computed(() => {
     let usagesLength = form.usages.length;
@@ -420,21 +394,12 @@ const isValidUsage = computed(() => {
 
 });
 
-const prevItem = computed(() => {
-    if (props.line?.data.id && props.line?.data.id > 1) {
-        return props.line?.data.id - 1;
-    } else {
-        return false;
-    }
-});
-const nextItem = computed(() => {
-    if (props.line?.data.id) {
-        return props.line?.data.id + 1;
-    }
-});
-
 const handleUsage = () => {
-    form.usages.push({ example: "", translation: "" });
+    const newUsageIndex = form.usages.push({ example: "", translation: "" });
+    const lastExampleId = `usage-example-${newUsageIndex}`;
+    nextTick(() => {
+        document.getElementById(lastExampleId)?.focus();
+    });
 };
 
 const updateLine = () => {
