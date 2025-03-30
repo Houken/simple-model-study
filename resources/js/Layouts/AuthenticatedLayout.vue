@@ -8,7 +8,10 @@
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex items-center shrink-0">
-                                <Link :href="route('dashboard')">
+                                <Link
+                                    :href="route('dashboard')"
+                                    tabindex="88"
+                                >
                                 <ApplicationLogo
                                     class="block w-auto h-8 text-gray-800 fill-current dark:text-gray-200" />
                                 </Link>

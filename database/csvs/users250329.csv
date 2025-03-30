@@ -1,0 +1,2 @@
+"id","name","email","email_verified_at","password","remember_token","created_at","updated_at"
+1,"Admin","houken@me.com","2025-03-18 12:17:20","$2y$12$iZU6A1YFGwypC8utwCe8ne3t7tQRAxhrzn0c.DJAx2HrQ3I2PuTEO","qrDBaMQUhw","2025-03-18 12:17:20","2025-03-18 12:17:20"

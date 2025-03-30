@@ -49,6 +49,7 @@
                                         v-model="form.book_id"
                                         :books="books"
                                         :selectedBookId="props.line?.data.book.id"
+                                        tabindex="21"
                                     />
                                 </div>
                                 <div
@@ -86,11 +87,12 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.word_id
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
 
                             <div class="relative sm:col-start-4 sm:col-span-9">
                                 <input
+                                    tabindex="22"
                                     v-model="wordFilter"
                                     id="word-select"
                                     type="text"
@@ -157,6 +159,7 @@
 
                             <div class="sm:col-span-9">
                                 <input
+                                    tabindex="23"
                                     v-model="form.index_no"
                                     id="line-index-no"
                                     type="number"
@@ -168,7 +171,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.index_no
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
 
                             <div class="sm:col-span-3">
@@ -183,6 +186,8 @@
 
                             <div class="sm:col-span-9">
                                 <input
+                                    v-shortkey.focus="['ctrl', 'shift', 'd']"
+                                    tabindex="1"
                                     v-model="form.definition"
                                     id="line-definition"
                                     type="text"
@@ -194,7 +199,7 @@
                                 class="col-span-9 col-start-4 -mt-4 font-bold text-red-400"
                             >{{
                                 form.errors.definition
-                                }}</div>
+                            }}</div>
                             <!-- End Col -->
                         </div>
                         <!-- End Section -->
@@ -228,7 +233,7 @@
                                 <!-- Usages Example 1 Input Column -->
                                 <div class="sm:col-span-7">
                                     <input
-                                        :tabindex="6 + index * 2"
+                                        :tabindex="2 + index * 2"
                                         :id="'usage-example-' + (index + 1)"
                                         v-model="usage.example"
                                         type="text"
@@ -266,7 +271,7 @@
                                 <!-- Usages Translation 1 Input Column -->
                                 <div class="sm:col-span-7">
                                     <input
-                                        :tabindex="7 + index * 2"
+                                        :tabindex="3 + index * 2"
                                         :id="'usage-translation-' + (index + 1)"
                                         v-model="usage.translation"
                                         type="text"
@@ -292,7 +297,8 @@
                             <div class="sm:col-span-3 sm:col-start-4">
                                 <p class="">
                                     <button
-                                        tabindex="16"
+                                        v-shortkey.focus="['ctrl', 'shift', 'a']"
+                                        tabindex="12"
                                         :disabled="!isValidUsage"
                                         type="button"
                                         @click="handleUsage"
@@ -319,7 +325,7 @@
                             </Link>
                             <!-- Update Line -->
                             <button
-                                tabindex="99"
+                                tabindex="20"
                                 type="submit"
                                 :disabled="form.processing"
                                 class="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg gap-x-2 hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"

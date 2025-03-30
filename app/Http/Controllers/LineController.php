@@ -83,6 +83,7 @@ class LineController extends Controller
         $lines = $allLines->random(25);
         // dd($lines);
         $books = BookResource::collection(Book::all());
+        // dd($books);
         $bookId = $request->book;
         $indexNoFrom = $request->from;
         $indexNoTo = $request->to;

@@ -33,7 +33,7 @@ class Line extends Model
 
     public function scopeBookFilter(Builder $query, Request $request)
     {
-        $bookId = $request->book;
+        $bookId = $request->book ?? 1;
         return $query->when($bookId, function ($query) use ($bookId) {
             return $query->where('book_id', $bookId);
         });
@@ -41,8 +41,8 @@ class Line extends Model
 
     public function scopeIndexNoFilter(Builder $query, Request $request)
     {
-        $indexNoFrom = $request->from;
-        $indexNoTo = $request->to;
+        $indexNoFrom = $request->from ?? 1;
+        $indexNoTo = $request->to ?? 100;
         return $query->when($indexNoFrom, function ($query) use ($indexNoFrom, $indexNoTo) {
             return $query->whereBetween('index_no', [$indexNoFrom, $indexNoTo]);
         });

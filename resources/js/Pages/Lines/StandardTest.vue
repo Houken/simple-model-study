@@ -38,7 +38,7 @@
                                                 :key="book.id"
                                                 :value="book.id"
                                             >{{ book.slug
-                                            }} 第{{
+                                                }} 第{{
                                                     book.version }}版
                                             </option>
                                         </select>
@@ -53,7 +53,7 @@
                                             v-model="indexNoFrom"
                                             class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm text-end pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                         >
-                                            <option v-for="n in props.books.data[bookId - 1].max_index / 100">{{
+                                            <option v-for="n in theMaxIndex / 100">{{
                                                 n * 100 - 99 }}
                                             </option>
                                         </select>
@@ -67,7 +67,7 @@
                                             class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-9 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                         >
 
-                                            <option v-for="n in props.books.data[bookId - 1].max_index / 100">{{
+                                            <option v-for="n in theMaxIndex / 100">{{
                                                 n * 100 }}
                                             </option>
                                         </select>
@@ -275,6 +275,17 @@ const props = defineProps({
 let bookId = ref(props.bookId ?? 1),
     indexNoFrom = ref(props.indexNoFrom ?? 1),
     indexNoTo = ref(props.indexNoTo ?? 100);
+
+let theBook = computed(() => {
+    return props.books.data[bookId.value - 1];
+})
+
+let theMaxIndex = computed(() => {
+    if (theBook.value === undefined) {
+        return 2000;
+    }
+    return theBook.value.max_index;
+})
 
 const validateIndexNoFrom = (value: number): void => {
     if (Number(value) > indexNoTo.value) {
