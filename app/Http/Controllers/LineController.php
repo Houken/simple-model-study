@@ -50,51 +50,44 @@ class LineController extends Controller
         });
     }
 
-    public function reorderTest(Request $request)
+    protected function getRandomTestLines(Request $request, int $count = 20): array
     {
-        // dd($request);
+        $bookId = (int)($request->book ?? 1);
+        $from = (int)($request->from ?? 1);
+        $to = (int)($request->to ?? 100);
+        $wordFilter = $request->wordFilter ?? '';
+
+        $books = BookResource::collection(Book::all());
+
         $linesQuery = Line::bookFilter($request)->indexNoFilter($request);
-        $wordFilter = $request->wordFilter;
         $this->applyLineFilterByWord($linesQuery, $wordFilter);
         $allLines = $linesQuery->get();
-        $lines = $allLines->random(20);
-        // dd($lines);
-        $books = BookResource::collection(Book::all());
-        $bookId = $request->book;
-        $indexNoFrom = $request->from;
-        $indexNoTo = $request->to;
 
-        return Inertia::render('Lines/ReorderTest', [
-            'lines' => $lines,
+        return [
+            'lines' => $allLines->random(min($count, $allLines->count())),
             'books' => $books,
-            'bookId' => intval($bookId),
-            'indexNoFrom' => intval($indexNoFrom),
-            'indexNoTo' => intval($indexNoTo),
-        ]);
+            'book_id' => $bookId,
+            'index_no_from' => $from,
+            'index_no_to' => $to,
+        ];
+    }
+
+    public function reorderTest(Request $request)
+    {
+        $data = $this->getRandomTestLines($request, 20);
+        return Inertia::render('Lines/ReorderTest', $data);
     }
 
     public function standardTest(Request $request)
     {
-        // Set default values if request parameters are empty
-        $bookId = $request->book ?? 1;
-        $indexNoFrom = $request->from ?? 1;
-        $indexNoTo = $request->to ?? 100;
-        $wordFilter = $request->wordFilter ?? '';
+        $data = $this->getRandomTestLines($request, 25);
+        return Inertia::render('Lines/StandardTest', $data);
+    }
 
-        $linesQuery = Line::bookFilter($request)->indexNoFilter($request);
-        $this->applyLineFilterByWord($linesQuery, $wordFilter);
-        $allLines = $linesQuery->get();
-        $lines = $allLines->random(min(25, $allLines->count()));
-
-        $books = BookResource::collection(Book::all());
-
-        return Inertia::render('Lines/StandardTest', [
-            'lines' => $lines,
-            'books' => $books,
-            'bookId' => intval($bookId),
-            'indexNoFrom' => intval($indexNoFrom),
-            'indexNoTo' => intval($indexNoTo),
-        ]);
+    public function usagesTest(Request $request)
+    {
+        $data = $this->getRandomTestLines($request, 20);
+        return Inertia::render('Lines/UsagesTest', $data);
     }
 
     public function finalCheck(Request $request)

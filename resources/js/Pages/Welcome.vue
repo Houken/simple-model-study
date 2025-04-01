@@ -78,12 +78,14 @@ function handleImageError() {
                             tip="和訳問題"
                             bgColor="gray-200"
                             tip-placement="top"
+                            test-route="test.word.ej"
                         />
                         <TestSelectButton
                             message="J to E"
                             tip="英訳問題"
                             bgColor="slate-200"
                             tip-placement="bottom"
+                            test-route="test.word.ej"
                         />
                     </div>
                     <div
@@ -95,12 +97,14 @@ function handleImageError() {
                             tip="和訳問題"
                             bgColor="slate-200"
                             tip-placement="top"
+                            test-route="test.usage.ej"
                         />
                         <TestSelectButton
                             message="re-Order"
                             tip="並べ替え問題"
                             bgColor="gray-200"
                             tip-placement="bottom"
+                            test-route="test.usage.ej"
                         />
                     </div>
                 </div>

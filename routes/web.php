@@ -20,6 +20,7 @@ Route::get('/', function () {
 });
 
 Route::get('/test-word-ej', [LineController::class, 'standardTest'])->name('test.word.ej');
+Route::get('/test-usage-ej', [LineController::class, 'usagesTest'])->name('test.usage.ej');
 
 // Route::get('/test-word-ej', [LineController::class, 'standardTest'])->name('testWordEj');
 

@@ -1,7 +1,7 @@
 <template>
   <Link
     type="button"
-    :href="route('test.word.ej')"
+    :href="route(testRoute ?? 'test.word.ej')"
     :class="`p-4 hs-tooltip bg-${bgColor} flex items-center justify-center rounded-full w-64 h-24 mx-auto font-black text-2xl
   transition delay-200 duration-300 ease-in-out hover:bg-gray-500 hover:text-white`"
   >{{ message
@@ -19,6 +19,7 @@ defineProps<{
   bgColor?: string
   tip?: string,
   tipPlacement?: string,
+  testRoute?: string
 }>();
 
 </script>
