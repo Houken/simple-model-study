@@ -5,6 +5,7 @@ use App\Http\Controllers\LineController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UsageController;
 use App\Http\Controllers\WordController;
+use App\Models\Line;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,6 +18,10 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+
+Route::get('/test-word-ej', [LineController::class, 'standardTest'])->name('test.word.ej');
+
+// Route::get('/test-word-ej', [LineController::class, 'standardTest'])->name('testWordEj');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

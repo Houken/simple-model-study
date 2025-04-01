@@ -75,18 +75,18 @@ class LineController extends Controller
 
     public function standardTest(Request $request)
     {
-        // dd($request);
+        // Set default values if request parameters are empty
+        $bookId = $request->book ?? 1;
+        $indexNoFrom = $request->from ?? 1;
+        $indexNoTo = $request->to ?? 100;
+        $wordFilter = $request->wordFilter ?? '';
+
         $linesQuery = Line::bookFilter($request)->indexNoFilter($request);
-        $wordFilter = $request->wordFilter;
         $this->applyLineFilterByWord($linesQuery, $wordFilter);
         $allLines = $linesQuery->get();
-        $lines = $allLines->random(25);
-        // dd($lines);
+        $lines = $allLines->random(min(25, $allLines->count()));
+
         $books = BookResource::collection(Book::all());
-        // dd($books);
-        $bookId = $request->book;
-        $indexNoFrom = $request->from;
-        $indexNoTo = $request->to;
 
         return Inertia::render('Lines/StandardTest', [
             'lines' => $lines,

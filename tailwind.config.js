@@ -50,11 +50,14 @@ export default {
                 a4: '210mm'
             },
             height: {
-                a4: '297mm'
+                a4: '297mm',
+                'minus-1rem': 'calc(100% - .25rem)'
             },
             colors: {
                 'red-sheet': '#ffaaaa',
                 background: 'hsl(var(--background))',
+                'background-from': 'hsl(var(--background-from))',
+                'background-to': 'hsl(var(--background-to))',
                 foreground: 'hsl(var(--foreground))',
                 card: {
                     DEFAULT: 'hsl(var(--card))',
