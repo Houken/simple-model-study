@@ -19,8 +19,10 @@ class Usage extends Model
 
     // 語順整序問題の生成をアクセサで記述
     protected $appends = ['ordered_words'];
+
     public function getOrderedWordsAttribute()
     {
+        $matches = [];
         // 対象のインスタンスからexampleを取得
         $example = $this->example;
         // 生成に不要な文字、空白を取り除き、全体を小文字にする
@@ -33,6 +35,7 @@ class Usage extends Model
                 'phrase' => trim(str_replace('*', '', $match)),
                 'asterisked' => str_starts_with($match, '*'),
             ];
+
             return $result;
         };
         // マッチした部分をコールバック関数を使って変換

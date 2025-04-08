@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use Flynsarmy\CsvSeeder\CsvSeeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class BookSeeder extends CsvSeeder
@@ -12,7 +10,7 @@ class BookSeeder extends CsvSeeder
     public function __construct()
     {
         $this->table = 'books';
-        $this->filename = base_path() . '/database/csvs/books.csv';
+        $this->filename = base_path().'/database/csvs/books.csv';
     }
 
     public function run(): void

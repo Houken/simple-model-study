@@ -31,7 +31,7 @@ class StoreWordRequest extends FormRequest
                 Rule::unique('words', 'part_of_speech')
                     ->where('english', $this->english)
                     ->ignore($this->id),
-            ]
+            ],
         ];
     }
 }

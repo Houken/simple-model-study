@@ -15,7 +15,6 @@ class LineFactory extends Factory
      *
      * @return array<string, mixed>
      */
-
     public function definition(): array
     {
         $existingCombinations = Line::pluck('book_id', 'word_id')->toArray();

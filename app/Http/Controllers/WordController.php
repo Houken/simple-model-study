@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWordRequest;
 use App\Http\Requests\UpdateWordRequest;
-use App\Http\Resources\BookResource;
 use App\Http\Resources\WordResource;
 use App\Models\Book;
 use App\Models\Line;
@@ -20,6 +19,7 @@ class WordController extends Controller
     public function index()
     {
         $words = WordResource::collection(Word::paginate(15));
+
         return Inertia::render('Words/Index', [
             'words' => $words,
         ]);
@@ -40,6 +40,7 @@ class WordController extends Controller
             $nameOfPreviousRoute = 'words.index';
         }
         $listOfPartOfSpeech = $this->getListOfPoses();
+
         return Inertia::render('Words/Create', [
             'list_of_part_of_speech' => $listOfPartOfSpeech,
             'previousUrl' => $previous,
@@ -74,7 +75,7 @@ class WordController extends Controller
         $word = Word::create($validated);
         // $redirectTo = $previousUrl ?? '/dashboard';
         $newWordId = $word->id;
-        $message =  '新しい単語が保存されました。';
+        $message = '新しい単語が保存されました。';
 
         // return redirect()
         //     ->to($redirectTo)
@@ -119,6 +120,7 @@ class WordController extends Controller
     {
         $lines = Line::whereBelongsTo($word)->get();
         $books = Book::all();
+
         // dd($books);
         return Inertia::render('Words/Show', [
             'word' => $word,
@@ -143,6 +145,7 @@ class WordController extends Controller
     public function update(UpdateWordRequest $request, Word $word)
     {
         $word->update($request->validated());
+
         return redirect()->route('words.show', ['word' => $word]);
     }
 

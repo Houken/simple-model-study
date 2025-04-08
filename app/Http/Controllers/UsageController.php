@@ -44,6 +44,7 @@ class UsageController extends Controller
     public function showOrderTestList()
     {
         $usages = Usage::paginate(15);
+
         return Inertia::render('Usages/OrderTest', [
             'usages' => $usages,
         ]);

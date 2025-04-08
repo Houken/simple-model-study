@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Book;
-use App\Models\Line;
 use App\Models\User;
 use App\Models\Word;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;

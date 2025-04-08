@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\RouteHelper;
 use App\Http\Requests\StoreLineRequest;
 use App\Http\Requests\UpdateLineRequest;
 use App\Http\Resources\BookResource;
@@ -14,14 +13,12 @@ use App\Models\Word;
 use App\Traits\HasPreviousRouteInfo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\URL;
 use Inertia\Inertia;
-use LengthException;
-use Symfony\Component\CssSelector\Node\FunctionNode;
 
 class LineController extends Controller
 {
     use HasPreviousRouteInfo;
+
     /**
      * Display a listing of the resource.
      */
@@ -52,9 +49,9 @@ class LineController extends Controller
 
     protected function getRandomTestLines(Request $request, int $count = 20): array
     {
-        $bookId = (int)($request->book ?? 1);
-        $from = (int)($request->from ?? 1);
-        $to = (int)($request->to ?? 100);
+        $bookId = (int) ($request->book ?? 1);
+        $from = (int) ($request->from ?? 1);
+        $to = (int) ($request->to ?? 100);
         $wordFilter = $request->wordFilter ?? '';
 
         $books = BookResource::collection(Book::all());
@@ -75,18 +72,21 @@ class LineController extends Controller
     public function reorderTest(Request $request)
     {
         $data = $this->getRandomTestLines($request, 20);
+
         return Inertia::render('Lines/ReorderTest', $data);
     }
 
     public function standardTest(Request $request)
     {
         $data = $this->getRandomTestLines($request, 25);
+
         return Inertia::render('Lines/StandardTest', $data);
     }
 
     public function usagesTest(Request $request)
     {
         $data = $this->getRandomTestLines($request, 20);
+
         return Inertia::render('Lines/UsagesTest', $data);
     }
 
@@ -117,7 +117,7 @@ class LineController extends Controller
             $this->applyWordFilter($wordsQuery, $wordFilter);
             $words = $wordsQuery->limit(10)->get();
             $word = [];
-        } else if ($request->newWordId) {
+        } elseif ($request->newWordId) {
             // 絞り込み文字列はないが、wordの指定がある場合
             $words = [];
             $wordId = $request->newWordId;
@@ -130,8 +130,9 @@ class LineController extends Controller
         $books = Book::all();
         $nextBookId = $request->nextBookId ? intval($request->nextBookId) : 0;
         $nextIndexNo = $request->nextIndexNo ? intval($request->nextIndexNo) : 0;
-        $wordController = new WordController();
+        $wordController = new WordController;
         $listOfPoses = $wordController->getListOfPoses();
+
         return Inertia::render('Lines/Create', [
             'books' => $books,
             'words' => $words,
@@ -201,7 +202,7 @@ class LineController extends Controller
      */
     public function store(StoreLineRequest $request)
     {
-        $line = new Line();
+        $line = new Line;
         $line->fill([
             'book_id' => $request->book_id,
             'word_id' => $request->word_id,
@@ -268,7 +269,7 @@ class LineController extends Controller
         return Inertia::render('Lines/Edit', [
             'line' => $line,
             'books' => $books,
-            'nextLineExists' => $nextLineExists
+            'nextLineExists' => $nextLineExists,
         ]);
     }
 
@@ -292,10 +293,12 @@ class LineController extends Controller
             });
 
             session()->flash('message', 'Lineを更新しました。');
+
             return to_route('lines.show', $line)
                 ->with('message', 'Lineを更新しました。');
         } catch (\Throwable $th) {
             session()->flash('error', 'Lineの更新に失敗しました。');
+
             return redirect(route('lines.index'));
         }
     }
@@ -304,7 +307,7 @@ class LineController extends Controller
     {
         // dd($line, $usages);
         foreach ($usages as $usage) {
-            if (!isset($usage['id'])) {
+            if (! isset($usage['id'])) {
                 // 新規追加
                 $line->usages()->create([
                     'example' => $usage['example'],
