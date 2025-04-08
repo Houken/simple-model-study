@@ -7,6 +7,7 @@
                         <div class="p-1.5 min-w-full inline-block align-middle">
                             <div
                                 class="flex items-center justify-center px-4 py-2 space-x-4 bg-slate-200 dark:bg-slate-600">
+                                <!--  -->
                                 <div class="flex items-center">
                                     <label
                                         for="select-book"
@@ -96,7 +97,7 @@
                                             </td>
                                             <td
                                                 class="px-6 py-2 text-xs text-gray-800 whitespace-nowrap dark:text-neutral-200">
-                                                {{ line.usages[0].example }}
+                                                <ExampleQuestion :text="line.usages[0].example" />
                                             </td>
                                             <td
                                                 class="px-6 py-2 text-xs text-gray-800 text-start whitespace-nowrap dark:text-neutral-200">

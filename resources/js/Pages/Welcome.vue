@@ -27,10 +27,24 @@ function handleImageError() {
     <div class="bg-neutral-500 p-4 h-screen">
         <div
             class="p-4 rounded-xl bg-gradient-to-b from-background-from to-background-to text-black/50 dark:bg-black dark:text-white/50 size-full">
+            <div
+                class="absolute top-8 left-8 size-fit hover:bg-teal-900/50 bg-teal-300/10 rounded-full transition duration-300 ease-in-out">
+                <Link :href="route('dashboard')">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                ></svg>
+                </Link>
+            </div>
             <ApplicationLogo />
-            <div class="max-h-[468px] h-[80%] w-[35rem] p-[1.5rem] bg-white/30 rounded-[3rem] mx-auto mt-8">
+            <div class="max-h-[468px] h-[80%] w-[34rem] p-4 pb-0 bg-white/30 rounded-[1rem] mx-auto mt-8 shadow-sm">
                 <div
-                    class="relative p-4 max-h-[420px] h-minus-1rem w-[32rem] bg-white rounded-[2rem] z-0 mx-auto flex flex-col">
+                    class="relative p-4 bg-white rounded-[0.75rem] z-0 flex flex-col max-h-[calc(468px-2rem)] h-screen shadow-md">
+
                     <div class="relative w-[32rem] p-0 font-sans mx-auto
                     before:content-[' '] before:absolute before:left-0 before:w-[30rem] before:h-[5rem] before:bg-[#ebedf0] before:rounded-[28px] before:z-[-1]
                     ">
@@ -93,8 +107,8 @@ function handleImageError() {
                         class="relative flex flex-col gap-y-4 mt-16 transition-all duration-200 ease-in-out"
                     >
                         <TestSelectButton
-                            message="E to J"
-                            tip="和訳問題"
+                            message="Fill Blank"
+                            tip="穴埋め問題"
                             bgColor="slate-200"
                             tip-placement="top"
                             test-route="test.usage.ej"

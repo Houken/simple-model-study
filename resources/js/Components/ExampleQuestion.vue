@@ -18,7 +18,7 @@ const props = defineProps({
 // console.log(props.text)
 const formattedText = computed(
     text => {
-        let asterisked = props.text.replace(/\*(.*?)\*/g, '(　<span class="tracking-widest text-white">$1</span>　)')
+        let asterisked = props.text.replace(/\*(.*?)\*/g, '(　<span class="tracking-widest text-white/0">$1</span>　)')
         let backquoted = asterisked.replace(/`(.*?)`/g, '<span class="underline">$1</span>')
 
         return backquoted
