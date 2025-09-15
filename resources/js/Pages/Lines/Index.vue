@@ -38,7 +38,7 @@
                                                 :key="book.id"
                                                 :value="book.id"
                                             >{{ book.slug
-                                                }} 第{{
+                                            }} 第{{
                                                     book.version }}版
                                             </option>
                                         </select>
@@ -53,12 +53,22 @@
                                         <input
                                             v-model="wordFilter"
                                             id="filter-word"
+                                            name="wordFilter"
                                             type="text"
                                             class="block w-full px-3 py-2 text-sm border-gray-200 rounded-lg shadow-sm pe-11 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
                                         >
                                     </div>
-
-
+                                    <div
+                                        v-if="totalCount !== undefined"
+                                        class="text-sm text-gray-600 dark:text-gray-300 flex items-center border border-gray-300 rounded-lg px-2 py-1"
+                                    >
+                                        <ListFilter :size="16" />
+                                        <span
+                                            class="ml-1 inline-flex items-center gap-1.5 py-0.5 px-1.5 rounded-full text-xs font-medium border border-gray-400 text-gray-800 dark:border-neutral-700 dark:text-neutral-300"
+                                        >
+                                            {{ totalCount }}
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="overflow-hidden">
                                     <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
@@ -138,13 +148,22 @@
 
 <script setup lang="ts">
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, InertiaForm, Link, router, useForm, usePage } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
 import { computed, PropType, ref, watch } from 'vue';
-import { Book, Word, Usage, Line, linkObj } from '@/types/models';
+import { Book, Line, linkObj } from '@/types/models';
 import Pagination from '@/Components/Pagination.vue';
-import { BookDownIcon } from 'lucide-vue-next';
 import PosAndWord from '@/Components/PosAndWord.vue';
 import TitleAndVersion from '@/Components/TitleAndVersion.vue';
+import { ListFilter } from 'lucide-vue-next';
+
+// デバウンス用の関数を追加
+const debounce = (fn: Function, delay: number) => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+    return (...args: any[]) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => fn(...args), delay);
+    };
+};
 
 const props = defineProps({
     lines: {
@@ -155,11 +174,19 @@ const props = defineProps({
         type: Object as PropType<{ data: Book[] }>,
         default: () => ({ data: [] }),
     },
+    wordFilter: {
+        type: String,
+        default: "",
+    },
+    totalCount: {
+        type: Number,
+        default: undefined,
+    },
 });
 
-let bookId = ref(usePage().props.book ?? "0"),
+let bookId = ref("0"),
     pageNumber = ref(1),
-    wordFilter = ref(usePage().props.wordFilter ?? "");
+    wordFilter = ref(props.wordFilter ?? "");
 
 const updatedPageNumber = (link: linkObj) => {
     pageNumber.value = parseInt(link.url.split("=")[1]);
@@ -177,12 +204,17 @@ let linesUrl = computed(() => {
     return url;
 });
 
-watch(() => linesUrl.value, (updatedLinesUrl) => {
-    router.visit(updatedLinesUrl, {
+// デバウンス処理を適用したwatch
+const debouncedVisit = debounce((url: URL) => {
+    router.visit(url, {
         preserveScroll: true,
         preserveState: true,
         replace: true,
     });
+}, 300); // 300ミリ秒のデバウンス
+
+watch(() => linesUrl.value, (updatedLinesUrl) => {
+    debouncedVisit(updatedLinesUrl);
 });
 
 watch(

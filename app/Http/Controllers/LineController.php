@@ -27,14 +27,19 @@ class LineController extends Controller
         $linesQuery = Line::bookFilter($request);
         $wordFilter = $request->wordFilter;
         $this->applyLineFilterByWord($linesQuery, $wordFilter);
-        $perPage = env('LINE_PER_PAGE', 15);
-        // dd($perPage);
+        $perPage = config('app.line_per_page', 15);
+
+        // 検索件数を取得
+        $totalCount = $linesQuery->count();
+
         $lines = LineResource::collection($linesQuery->paginate($perPage));
         $books = BookResource::collection(Book::all());
 
         return Inertia::render('Lines/Index', [
             'lines' => $lines,
             'books' => $books,
+            'wordFilter' => $wordFilter,
+            'totalCount' => $totalCount,
         ]);
     }
 
@@ -42,7 +47,7 @@ class LineController extends Controller
     {
         return $query->whereHas('word', function ($query) use ($search) {
             if ($search) {
-                $query->whereLike('english', "$search%");
+                $query->whereLike('english', "%$search%");
             }
         });
     }
@@ -81,6 +86,13 @@ class LineController extends Controller
         $data = $this->getRandomTestLines($request, 25);
 
         return Inertia::render('Lines/StandardTest', $data);
+    }
+
+    public function standardTestJe(Request $request)
+    {
+        $data = $this->getRandomTestLines($request, 25);
+
+        return Inertia::render('Lines/StandardTestJe', $data);
     }
 
     public function usagesTest(Request $request)
@@ -154,8 +166,8 @@ class LineController extends Controller
         $wordController = new WordController;
         $listOfPoses = $wordController->getListOfPoses();
         // Create Next用のprop
-        $nextBookId = intval($request->nextBookId) ?? null;
-        $nextIndexNo = intval($request->nextIndexNo) ?? null;
+        $nextBookId = $request->nextBookId === null ? null : intval($request->nextBookId);
+        $nextIndexNo = $request->nextIndexNo === null ? null : intval($request->nextIndexNo);
 
         // wordの絞り込み処理
         if ($request->wordFilter) {
@@ -173,8 +185,11 @@ class LineController extends Controller
         // word_idが指定済みなら、既存のlineのdefinitionの値のリストを返す
         if ($request->wordId) {
             $lines = Line::where('word_id', $request->wordId);
-            $definitions = $lines->select('id', 'book_id', 'definition')->get();
-            // dd($definitions);
+            // dd($request, $lines);
+            // $definitions = $lines->select('id', 'book_id', 'definition')->get();
+            $definitions = LineResource::collection(
+                $lines->select('id', 'book_id', 'definition', 'word_id', 'index_no')->get()
+            )->toArray(request());
         }
 
         return Inertia::render('Lines/Create', [

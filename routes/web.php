@@ -19,6 +19,7 @@ Route::get('/', function () {
 });
 
 Route::get('/test-word-ej', [LineController::class, 'standardTest'])->name('test.word.ej');
+Route::get('/test-word-je', [LineController::class, 'standardTestJe'])->name('test.word.je');
 Route::get('/test-usage-ej', [LineController::class, 'usagesTest'])->name('test.usage.ej');
 
 // Route::get('/test-word-ej', [LineController::class, 'standardTest'])->name('testWordEj');
@@ -53,4 +54,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

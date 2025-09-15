@@ -7,6 +7,17 @@
                         <div class="p-1.5 min-w-full inline-block align-middle">
                             <div
                                 class="flex items-center justify-center px-4 py-2 space-x-4 bg-slate-200 dark:bg-slate-600">
+                                <div class="flex items-center min-w-[8rem]">
+                                    <h3 class="text-sm mr-2">Hint:</h3>
+                                    <Slider
+                                        v-model="hintLevel"
+                                        :default-value="[2]"
+                                        :max="2"
+                                        :min="0"
+                                        :step="1"
+                                        class="mr-2"
+                                    /><span>{{ hintLevel[0] }}</span>
+                                </div>
                                 <div class="flex items-center">
                                     <label
                                         for="select-book"
@@ -96,7 +107,24 @@
                                             </td>
                                             <td
                                                 class="px-6 py-2 text-xs text-gray-800 whitespace-nowrap dark:text-neutral-200">
-                                                {{ line.word.english }}
+                                                <template v-if="hintLevel[0] === 0">
+                                                    <div class="border-b">　</div>
+                                                </template>
+                                                <template v-else-if="hintLevel[0] === 1">
+                                                    <span class="text-gray-400">{{ '　_'.repeat(line.word.english.length)
+                                                    }}</span>
+                                                </template>
+                                                <template v-else-if="hintLevel[0] === 2">
+                                                    <span v-if="line.word.english">
+                                                        {{ line.word.english[0] }}　
+                                                        <span class="text-gray-400">{{
+                                                            line.word.english.slice(1)
+                                                                .split('')
+                                                                .map((char: string) => /[a-zA-Z]/.test(char) ? '_' : char)
+                                                                .join('　')
+                                                        }}</span>
+                                                    </span>
+                                                </template>
                                             </td>
                                             <td
                                                 class="px-6 py-2 text-xs text-gray-800 text-start whitespace-nowrap dark:text-neutral-200">
@@ -159,14 +187,25 @@
                         class="relative px-4 py-2 text-sm text-center text-gray-800 whitespace-nowrap dark:text-neutral-200 hover:bg-slate-200">
                         {{ index + 1 }}
                     </td>
-                    <td class="px-4 py-2 text-[11pt] text-gray-800 text-start whitespace-nowrap dark:text-neutral-200">
+                    <td class="px-4 py-2 text-[10pt] text-gray-800 text-start whitespace-nowrap dark:text-neutral-200">
                         <div class="flex flex-row">
                             <PosBox :first-letter-of-pos="line.word.part_of_speech[0]" /><span class="pl-1">{{
-                                line.word.english }}</span>
+                                line.definition }}</span>
                         </div>
                     </td>
                     <td class="px-4 py-2 text-xs text-gray-800 whitespace-nowrap dark:text-neutral-200">
+                        <template v-if="hintLevel[0] === 0">
 
+                        </template>
+                        <template v-else-if="hintLevel[0] === 1">
+                            <span class="text-gray-400">{{ '　_'.repeat(line.word.english.length) }}</span>
+                        </template>
+                        <template v-else-if="hintLevel[0] === 2">
+                            <span v-if="line.word.english">
+                                {{ line.word.english[0] }}
+                                <span class="text-gray-400">{{ '　_'.repeat(line.word.english.length - 1) }}</span>
+                            </span>
+                        </template>
                     </td>
                 </tr>
             </tbody>
@@ -216,7 +255,7 @@
                     </td>
                     <td class="px-4 py-2 text-[10pt] text-gray-600 text-start whitespace-nowrap dark:text-neutral-200">
                         <div class="flex flex-col"><span>
-                                {{ line.definition }}
+                                {{ line.word.english }}
                             </span></div>
                     </td>
                     <td class="px-4 py-2 text-xs text-gray-800 whitespace-nowrap dark:text-neutral-200">
@@ -236,6 +275,7 @@ import { Book, Word, Usage, Line, linkObj } from '@/types/models';
 import ExampleDecode from '@/Components/ExampleDecode.vue';
 import PosBox from '@/Components/PosBox.vue';
 import PosAndWord from '@/Components/PosAndWord.vue';
+import Slider from '@/Components/ui/slider/Slider.vue';
 
 const props = defineProps({
     lines: {
@@ -274,6 +314,8 @@ let theMaxIndex = computed(() => {
     return theBook.value.max_index;
 })
 
+let hintLevel = ref([2]);
+
 const validateIndexNoFrom = (value: number): void => {
     console.log("From:", value, " To:", indexNoTo.value);
     if (Number(value) > Number(indexNoTo.value)) {
@@ -292,7 +334,7 @@ watch(indexNoFrom, validateIndexNoFrom);
 watch(indexNoTo, validateIndexNoTo);
 
 let linesUrl = computed(() => {
-    let url = new URL(route('test.word.ej'));
+    let url = new URL(route('test.word.je'));
 
     if (bookId.value) {
         url.searchParams.append("book", bookId.value.toString());

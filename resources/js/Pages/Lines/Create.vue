@@ -335,6 +335,7 @@
                                             :key="existingDefinition.id"
                                             class="even:bg-gray-50 dark:even:bg-neutral-800 hover:bg-blue-100 dark:hover:bg-neutral-700 animate-slide-in-right"
                                             @click="copyDefinition(index)"
+                                            tabindex="0"
                                         >
                                             <td
                                                 class="px-2 py-2 text-xs text-gray-800 whitespace-nowrap dark:text-neutral-200">
@@ -344,7 +345,7 @@
                                             <td
                                                 class="px-2 py-2 text-xs text-blue-800 whitespace-nowrap dark:text-neutral-200">
                                                 <BookAndVersion
-                                                    :book="existingDefinition.book"
+                                                    :book="existingDefinition.book.data"
                                                     class="p-1 bg-blue-100 rounded"
                                                 />
                                             </td>
@@ -588,6 +589,7 @@ const cancelCreateNewWord = () => {
 // --- Store New Word Button
 const storeNewWord = async () => {
 
+    // 保存するデータを用意
     let dataToStore = {
         english: newEnglish.value,
         part_of_speech: newPartOfSpeech.value,
@@ -595,8 +597,6 @@ const storeNewWord = async () => {
         nextIndexNo: props.nextIndexNo,
         ...form.data,
     };
-
-    // console.log(dataToStore);
 
     router.put(route('words.storeFromLine'), dataToStore);
 

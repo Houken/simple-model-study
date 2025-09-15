@@ -12,7 +12,7 @@ class LinePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -20,7 +20,7 @@ class LinePolicy
      */
     public function view(User $user, Line $line): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -28,7 +28,7 @@ class LinePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -36,7 +36,7 @@ class LinePolicy
      */
     public function update(User $user, Line $line): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -44,7 +44,7 @@ class LinePolicy
      */
     public function delete(User $user, Line $line): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -52,7 +52,7 @@ class LinePolicy
      */
     public function restore(User $user, Line $line): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -60,6 +60,6 @@ class LinePolicy
      */
     public function forceDelete(User $user, Line $line): bool
     {
-        //
+        return true;
     }
 }

@@ -123,4 +123,15 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Cusstom Properties
+    |--------------------------------------------------------------------------
+    |
+    | These properties are used to set custom values for the application.
+    |
+    */
+
+    'line_per_page' => env('LINE_PER_PAGE', 15),
+
 ];

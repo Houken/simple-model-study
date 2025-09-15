@@ -224,7 +224,8 @@
                                 class="me-6"
                             >
                                 <button
-                                    tabindex="1"
+                                    ref="createNextBtn"
+                                    tabindex="0"
                                     type="button"
                                     @click="createNext()"
                                     class="inline-flex items-center px-2 py-1 text-xs font-medium text-white bg-teal-500 border border-transparent rounded-lg outline outline-teal-500 outline-1 focus:outline-offset-2 gap-x-1 hover:bg-teal-600 focus:bg-teal-600 disabled:opacity-50 disabled:pointer-events-none"
@@ -246,7 +247,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { Line } from '@/types/models';
-import { PropType } from 'vue';
+import { onMounted, PropType, ref } from 'vue';
 import ExampleDecode from '@/Components/ExampleDecode.vue';
 import SectionTitle from '@/Components/SectionTitle.vue';
 import { ArrowLeft, Edit, CirclePlus } from 'lucide-vue-next';
@@ -262,6 +263,8 @@ const props = defineProps({
         type: Boolean
     },
 });
+
+const createNextBtn = ref<HTMLButtonElement | null>(null);
 
 
 onKeyStroke('ArrowRight', () => {
@@ -282,6 +285,13 @@ onKeyStroke('e', () => {
         router.get(route('lines.edit', { line: props.line.data.id }));
     }
 });
+
+onMounted(() => {
+    if (!props.nextLineExists && createNextBtn.value) {
+        createNextBtn.value.focus();
+    }
+});
+
 const createNext = () => {
     let nextBookId = props.line?.data.book.id;
     let nextIndexNo = (props.line?.data.index_no || 0) + 1;

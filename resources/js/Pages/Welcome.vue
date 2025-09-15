@@ -99,7 +99,7 @@ function handleImageError() {
                             tip="英訳問題"
                             bgColor="slate-200"
                             tip-placement="bottom"
-                            test-route="test.word.ej"
+                            test-route="test.word.je"
                         />
                     </div>
                     <div
