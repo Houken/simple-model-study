@@ -618,8 +618,11 @@ let showWordPicker = ref(false);
 // --- --- wordFilterに有効な値がある場合wordPickerを表示
 watch(() => wordFilter.value, (newValue) => {
     if (newValue && newValue.trim() !== '') {
+        // wordFilterに有効な値がある場合wordPickerを表示
         showWordPicker.value = true;
+        newEnglish.value = newValue;
     } else {
+        // wordFilterが空の場合wordPickerを非表示
         showWordPicker.value = false;
     }
 });
@@ -691,6 +694,10 @@ let selectedWord = computed(() => {
 // --- 既存のDefinitionからのコピー
 const copyDefinition = (id: number) => {
     form.definition = props.existingDefinitions[id].definition;
+    // 値の代入が成功した後に、#line.definitionにフォーカスを移動する
+    nextTick(() => {
+        document.getElementById('line-definition')?.focus();
+    });
 }
 
 // Usagesの処理
